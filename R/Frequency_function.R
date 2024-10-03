@@ -1,5 +1,5 @@
 Frequency_function<-function(filepath,column1,column2,column3){
-  dataframe<-read_excel(filepath)
+  dataframe<-read_excel(filepath,na = c("NA", "")
   data<-dataframe %>% 
     na.omit(dataframe) %>%
     col_1<-count(column1) %>% 
