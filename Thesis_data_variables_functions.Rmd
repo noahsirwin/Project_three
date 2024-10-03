@@ -83,7 +83,6 @@ bogue_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA"
 THE_function<-function(filepath,columns){
 dataframe<-read_excel(filepath,na = c("NA", ""))
  data<-dataframe %>% 
- na.omit(dataframe) %>% 
  pull(columns)
 avg<-mean(data)
 return(avg)
@@ -140,3 +139,18 @@ Frequency_function<-function(data,column1,column2,column3){
 Frequency_function(data=athens_sgl_1,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls)
 
 #This isnt working as I would like. There are 125 rows in column1 but there is no data in column2 and column3 so I want it to be 125 + 0 + 0 but rigth now its counting 125 + 1 + 1
+
+
+stack_function<-function(data,column1,column2,column3,graphname){
+     graph_data<-data %>%
+         select({{column1}},{{column2}},{{column3}}) %>%
+         gather(key=sgls, value=mm) %>% 
+         mutate(rounded = round(mm)) %>% 
+         group_by(rounded, sgls) %>% 
+         summarize(count=n())
+     plot<-ggplot(data=graph_data,mapping=aes(x=rounded,y=count,fill=sgls))+geom_col(position = position_stack())+xlab("SGL's (mm)")+ylab("Frequency")
+     ggsave(graphname, width = 160, height = 80, units = "mm",dpi = 300)
+     return(graph_data)
+ }
+ ##Input
+stack_function(data=athens_sgl_4,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls,graphname="data/plots/athens_sgl_4_plot.png")
