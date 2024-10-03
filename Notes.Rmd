@@ -1,0 +1,76 @@
+---
+title: "Notes"
+output: html_document
+date: "2024-10-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+clcik the terminal tab in the bottom left pane
+it should load /cloud/project$    on the right
+then enter
+ git config --global user.email "noah.irwin@selu.edu"
+ git config --global user.name "Noah Irwin"
+
+Goto tools
+project options
+check the left hand side
+choose git svn
+go to version control system
+choose git
+click yes on the popup
+click yes to reset r studio
+
+This has created the top right git pane
+
+In the top rght pane go to the git tab
+click the white box beside the ReadMe rmd
+a green A should pop up
+this means ADD
+
+choose Commit below the tab bar in the top right pane
+
+add a commit message
+then click commit
+Those files will no longer show up ij the top right pane as we have not altered the code since we commited it. It is still there it just doesnt show in the top rigth pane until you alter it again 
+
+The right window will show a M for MODIFY as this file has already been added but is now being modified.
+
+##Pushing things to github
+click on your avitar and scroll down to settings
+then choose developer settings
+go to personal access tokens and choose classic
+generate new token classic
+check the REPO box all the rest of the boxes will also get checked
+then scroll to the bottom and hit generate token
+
+It will then create a string of characters that is our token
+copy it and then head back to R studio
+
+Install the package ("usethis")
+library("usethis")
+library("credentials")
+set_github_pat()
+it will then open up a window where you can paste the token in.
+If done correctly you will have the message "If prompted for GitHub credentials, enter your PAT in the password field
+Using GITHUB_PAT from Noah Steven Irwin (credential helper: cache)" appear in your console.
+
+##Creating a place to push code to github
+
+Create a new repositry
+name the new reprosity
+write a note
+then scroll to the bottom and click create reporsitory
+
+copy the url for QUICK SETUP
+click the assortment of shapes "new branch" in the top right pane when you click the Git tab
+when you click it a window asking you to name a new branch will popup
+click the button on the right side that says add remote
+in the window name it "origin" and paste the URL in the bottom section
+
+then it will send you back to the branch window popup name the branch "main" and make sure the remote menu on the left side now says "origin".
+click create branch
+If it asks you too insert the token, copy and paste the token we generated for our credentials package.
+
+##Actually pushing code to github
