@@ -1,0 +1,142 @@
+---
+title: "Thesis Functions and Variables"
+output: html_document
+date: "2024-10-01"
+---
+
+##Collection 1 sheets
+athens_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx", na = c("NA", ""),sheet="athens1")
+cochran_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="cochran1")
+auburn_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="auburn1")
+tusk_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="tuskegee1")
+pasc_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="pascagoula1")
+broad_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="broadriver1")
+bogue_sgl_1<-readxl::read_excel("thesis_project/First_collection_sgls.xlsx",na = c("NA", ""),sheet="boguechitto1")
+
+##Collection 2 sheets
+athens_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="athens2")
+cochran_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="cochran2")
+auburn_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="auburn2")
+tusk_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="tuskegee2")
+pasc_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="pascagoula2")
+broad_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="broadriver2")
+bogue_sgl_2<-readxl::read_excel("thesis_project/Second_collection_sgls.xlsx",na = c("NA", ""),sheet="boguechitto2")
+
+##Collection 3 sheets
+athens_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="athens3")
+cochran_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="cochran3")
+auburn_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="auburn3")
+tusk_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="tuskegee3")
+pasc_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="pascagoula3")
+broad_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="broadriver3")
+bogue_sgl_3<-readxl::read_excel("thesis_project/Third_collection_sgls.xlsx",na = c("NA", ""),sheet="boguechitto3")
+
+##Collection 4 sheets
+athens_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="athens4")
+cochran_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="cochran4")
+auburn_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="aubrun4")
+tusk_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="tuskegee4")
+pasc_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="pascagoula4")
+broad_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="broadriver4")
+bogue_sgl_4<-readxl::read_excel("thesis_project/Fourth_collection_sgls.xlsx",na = c("NA", ""),sheet="boguechitto4")
+
+
+##Journal Stream Data 1 sheets
+athens_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="athens_jour_1")
+cochran_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="cochran_jour_1")
+auburn_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="auburn_jour_1")
+tusk_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="tuskegee_jour_1")
+pasc_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="pascagoula_jour_1")
+broad_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="broad_jour_1")
+bogue_jour_1<-readxl::read_excel("thesis_project/journal_data1.xlsx",na = c("NA", ""),sheet="bouge_jour_1")
+
+##Journal Stream Data 2 sheets
+athens_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="athens_jour_2")
+cochran_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="cochran_jour_2")
+auburn_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="auburn_jour_2")
+tusk_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="tuskegee_jour_2")
+pasc_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="pascagoula_jour_2")
+broad_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="broad_jour_2")
+bogue_jour_2<-readxl::read_excel("thesis_project/journal_data2.xlsx",na = c("NA", ""),sheet="bouge_jour_2")
+
+##Journal Stream Data 3 sheets
+athens_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="athens_jour3")
+cochran_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="cochran_jour_3")
+auburn_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="aubrun_jour_3")
+tusk_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="tuskegee_jour_3")
+pasc_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="pascagoula_jour_3")
+broad_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="broad_jour_3")
+bogue_jour_3<-readxl::read_excel("thesis_project/journal_data3.xlsx",na = c("NA", ""),sheet="bogue_jour_3")
+
+##Journal Stream Data 4 sheets
+athens_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="athens_jour_4")
+cochran_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="cochran_jour_4")
+auburn_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="auburn_jour_4")
+tusk_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="tuskegee_jour_4")
+pasc_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="pascagoula_jour_4")
+broad_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="broad_jour_4")
+bogue_jour_4<-readxl::read_excel("thesis_project/journal_data4.xlsx",na = c("NA", ""),sheet="bogue_jour_4")
+
+###Functions
+
+##Working
+THE_function<-function(filepath,columns){
+dataframe<-read_excel(filepath,na = c("NA", ""))
+ data<-dataframe %>% 
+ na.omit(dataframe) %>% 
+ pull(columns)
+avg<-mean(data)
+return(avg)
+}
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+##Working
+Thesis_avg_function<-function(data,columns){
+    data<-data%>% 
+        na.omit(dataframe) %>% 
+        pull(columns)
+    avg<-mean(data)
+    return(avg)
+}
+##Input
+Thesis_avg_function(athens_sgl_1,"larva_sgls")
+
+##(Broken) (select in stead of pull)
+ Frequency_function<-function(data,column1,column2,column3){
+     col1<-data %>% 
+          na.omit(dataframe) %>% 
+           select({{column1}}) %>% 
+           count()
+ 
+ #      N_total<-col_1+col_2+col3
+ #       if(col_2>0 | col_3>0){
+ #          return(N_total)
+ #}else{    
+ message(paste("Column2 or Column3 is empty.",  col1))
+ }
+
+###Frequency function first rendition
+Frequency_function<-function(data,column1,column2,column3){
+  
+  col_1<-data %>% 
+    select({{column1}}) %>% 
+    na.omit() %>% 
+    count()
+  col_2<-data %>%
+    select({{column2}}) %>%
+    na.omit() %>% 
+    count()
+  col_3<-data %>%
+    select({{column3}}) %>%
+    na.omit() %>%
+    count()
+  N_total<-col_1+col_2+col_3
+  if(col_2>0 | col_3>0){
+    return(N_total)
+    }else{
+      message(paste("Column2 or Column3 is empty.", col_1))
+      }
+}
+##Input
+Frequency_function(data=athens_sgl_1,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls)
+
+#This isnt working as I would like. There are 125 rows in column1 but there is no data in column2 and column3 so I want it to be 125 + 0 + 0 but rigth now its counting 125 + 1 + 1
