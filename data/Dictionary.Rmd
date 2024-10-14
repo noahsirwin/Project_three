@@ -1,0 +1,41 @@
+Columns for ()_collection_sgls
+
+larva_slgs- The snout to girdle length measurements of larva in mm
+larva_rounded_sgls- The snout to girdle length measurements of larva in mm rounded to tenths place
+larva_ordered_sgls- larva_rounded_sgls ordered from smallest numerial value to the largest
+larva_x_sgls- Potential sgls measurements from 8-54mm. Used to graph frequencies of sgls on excell
+larva_frequency_sgls- The number of individuals that match the larva_x_sgls number on the same row after larva_rounded_sgls are rounded to the nearest whole number. Ex. 7.5,7.7,7.9,8.0,8.2,8.4 = 6 larva_rounded_sgls on the same row as larva_x_sgls 8.
+
+meta_sgls-The snout to girdle length measurements of transforming larva in mm
+meta_rounded_sgls-The snout to girdle length measurements of transforming larva in mm rounded to tenths place
+meta_ordered_sgls- meta_rounded_sgls ordered from smallest numerial value to the largest
+meta_x_sgls-Potential sgls measurements from 8-54mm. Used to graph frequencies of sgls on excell
+meta_frequency_sgls- The number of individuals that match the meta_x_sgls number on the same row after meta_rounded_sgls are rounded to the nearest whole number. Ex. 7.5,7.7,7.9,8.0,8.2,8.4 = 6 meta_rounded_sgls on the same row as meta_x_sgls 8.
+
+adult_rounded_sgls-The snout to girdle length measurements of adults i.e. metamorphs in mm rounded to tenths place
+meta_ordered_sgls- adult_rounded_sgls ordered from smallest numerial value to the largest
+adult_x_sgls-Potential sgls measurements from 8-54mm. Used to graph frequencies of sgls on excell
+adult_frequency_sgls- The number of individuals that match the adult_x_sgls number on the same row after adult_rounded_sgls are rounded to the nearest whole number. Ex. 7.5,7.7,7.9,8.0,8.2,8.4 = 6 adult_rounded_sgls on the same row as adult_x_sgls 8.
+
+Columns for journal_data()
+
+temp1-temp3- Temperature (celcius) readings taken with a YSI at three different locations in the stream
+temp_avg- Average Temperature calculated by averaging temp1-temp3
+do1-do3- Dissolved Oxygen (mg/L) readings taken with a YSI at three different locations in the stream
+do_avg- Average Dissolved Oxygen calculated by averaging do1-do3
+salinity1-salinity3-salinity readings (ppt) taken with a YSI at three different locations in the stream
+salinity_avg_ Average salinity calculated by averaging salinity1-salinity3
+tds1-tds3- Total Dissolved Solids (g/L) readings taken with a YSI at three different locations in the stream
+tds_avg- Average Total Dissolved Solids calculated by averaging tds1-tds3
+ph1-ph3- pH readings taken with a YSI at three different locations in the stream
+ph_avg- Average pH calculated by averaging ph1-ph3
+mmhg1-mmhg3- mmhg readings taken with a YSI at three different locations in the stream
+mmhg_avg- Average mmhg calculated by averaging mmhg1-mmhg3
+ccn-ccs-ccw-cce Canopy cover measurements collected in all four cardinal directions out of ()/17
+cc_total Percentage of canopy cover calculated by averaging the numerator of each direction an then dividing by 17 and then multiplying by 100.
+collection_time-Time spent collecting salamanders from the streams in hours.
+sample_size- Number of salamanders collected during the sample trip designated
+cpe- Catch-Perunit-Effort (salamanders/Hr)calcualted by dividing sample_size by collection_time divided by 2 if the solo column is FALSE
+solo- If this was a solo trip then TRUE if I was accompanied then FALSE
+leaf_litter1-leaf_litter3- number of squares filled with allochthonous material in a 25 square quadrant. A picture of the quadrant was taken at three different locations in the stream
+leaf_litter_total- Leaf Litter area (m^2) is calcualted by  averaging the numerators of leaf_litter1-leaf_litter3 and then divided by 25. The number is then multiplied by .01m^2
