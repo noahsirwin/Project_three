@@ -74,3 +74,4 @@ click create branch
 If it asks you too insert the token, copy and paste the token we generated for our credentials package.
 
 ##Actually pushing code to github
+commit the new material and then push the big green Push button to send it to github
