@@ -68,7 +68,7 @@ pasc_jour_3<-readxl::read_excel("data/journal_data3.xlsx",na = c("NA", ""),sheet
 broad_jour_3<-readxl::read_excel("data/journal_data3.xlsx",na = c("NA", ""),sheet="broad_jour_3")
 bogue_jour_3<-readxl::read_excel("data/journal_data3.xlsx",na = c("NA", ""),sheet="bogue_jour_3")
 
-##Journal Stream Data 4 sheets
+##Journal Stream Data 4 individual sheets
 athens_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="athens_jour_4")
 cochran_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="cochran_jour_4")
 auburn_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="auburn_jour_4")
@@ -76,6 +76,61 @@ tusk_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet
 pasc_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="pascagoula_jour_4")
 broad_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="broad_jour_4")
 bogue_jour_4<-readxl::read_excel("data/journal_data4.xlsx",na = c("NA", ""),sheet="bogue_jour_4")
+
+##Journal comparative sheets
+wb_sheets <- readxl::excel_sheets("data/journal_data1.xlsx")
+data_frame_jour1 = lapply(setNames(wb_sheets, wb_sheets),function(x) read_excel("data/journal_data1_amw.xlsx", sheet=x)) 
+df_jour1 = bind_rows(data_frame_jour1, .id="Sheet")                                                          
+df_jour1
+
+wb_sheets2 <- readxl::excel_sheets("data/journal_data2.xlsx") 
+data_frame_jour2= lapply(setNames(wb_sheets2, wb_sheets2),function(x) read_excel("data/journal_data2.xlsx", sheet=x)) 
+df_jour2 = bind_rows(data_frame_jour2, .id="Sheet")                                                          
+df_jour2
+
+wb_sheets3 <- readxl::excel_sheets("data/journal_data3.xlsx") 
+data_frame_jour3= lapply(setNames(wb_sheets3, wb_sheets3),function(x) read_excel("data/journal_data3.xlsx", sheet=x)) 
+df_jour3 = bind_rows(data_frame_jour3, .id="Sheet")                                                          
+df_jour3
+
+wb_sheets4 <- readxl::excel_sheets("data/journal_data4.xlsx") 
+data_frame_jour4= lapply(setNames(wb_sheets4, wb_sheets4),function(x) read_excel("data/journal_data4.xlsx", sheet=x)) 
+df_jour4 = bind_rows(data_frame_jour4, .id="Sheet")                                                          
+df_jour4
+
+
+##Ecoregion
+df_jour1_coastal<-df_jour1[c(1:3),]
+df_jour1_piedmont<-df_jour1[c(4:7),]
+
+df_jour2_coastal<-df_jour2[c(1:3),]
+df_jour2_piedmont<-df_jour2[c(4:8),]
+
+df_jour3_coastal<-df_jour3[c(1:3),]
+df_jour3_piedmont<-df_jour3[c(4:8),]
+
+df_jour4_coastal<-df_jour4[c(1:3),]
+df_jour4_piedmont<-df_jour4[c(4:8),]
+
+
+##Combined Ecoregions
+
+df_coastal_plain_combined=bind_rows(list(df_jour1_coastal,df_jour2_coastal,df_jour3_coastal,df_jour4_coastal), .id= "Coastal")
+df_coastal_plain_ecoregion<-df_coastal_plain_combined %>% 
+mutate(Coastal="coastal")
+
+df_piedmont_combined=bind_rows(list(df_jour1_piedmont,df_jour2_piedmont,df_jour3_piedmont,df_jour4_piedmont), .id = "Piedmont")
+df_piedmont_combined_ecoregion<-df_piedmont_combined %>% 
+ mutate(Piedmont="piedmont")
+
+###Combined whole journal data
+df_jour_whole_combined=bind_rows(df_piedmont_combined_ecoregion,df_coastal_plain_ecoregion)
+##combined with a new ecoregion column for comparisons
+master_df_jour_combined<-df_jour_whole_combined %>%
+unite(col=Ecoregion,Piedmont,Coastal)
+
+
+
 
 ###Functions
 
@@ -88,6 +143,7 @@ avg<-mean(data)
 return(avg)
 }
 filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+
 ##Working
 Thesis_avg_function<-function(data,columns){
     data<-data%>% 
@@ -96,8 +152,9 @@ Thesis_avg_function<-function(data,columns){
     avg<-mean(data)
     return(avg)
 }
-##Input
+# Thesis_avg_function Input
 Thesis_avg_function(athens_sgl_1,"larva_sgls")
+
 
 ##(Broken) (select in stead of pull)
  Frequency_function<-function(data,column1,column2,column3){
@@ -154,3 +211,13 @@ stack_function<-function(data,column1,column2,column3,graphname){
  }
  ##Input
 stack_function(data=athens_sgl_4,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls,graphname="data/plots/athens_sgl_4_plot.png")
+
+
+#Binding and pairing like sheets into a single data frame
+library(vctrs)
+wb_sheets <- readxl::excel_sheets("data/"".xlsx") 
+"data_frame" = lapply(setNames(wb_sheets, wb_sheets),  
+                     function(x) read_excel("data/"".xlsx", sheet=x)) 
+df_"" = bind_rows("data_frame", .id="Sheet")                                                   
+df_""
+
