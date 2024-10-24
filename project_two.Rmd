@@ -1,0 +1,196 @@
+---
+title: "Project Two"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Due Oct. 25 at 11:59 PM. 
+
+For this first part of the exam, you can either use `surveys_complete.csv` or your own data. If you are using your own data, you must have data in which you think you have a numerical predictor variable and a numerical response variable. If you are using `surveys_complete`, you can use weight and hindfoot_length for this.
+
+Save this file in your `projects` directory. You can either save it in a project two subdirectory, or just put it in projects. Either way is fine.
+
+1) Load in your data. Which variable will you be using as a predictor, and which as a response? (5 pts)
+
+```{r}
+##Combined whole journal data
+df_jour_whole_combined=bind_rows(df_piedmont_combined,df_coastal_plain_combined)
+
+##Ecoregion
+df_jour1_coastal<-df_jour1[c(1:3),]
+df_jour1_piedmont<-df_jour1[c(4:7),]
+
+df_jour2_coastal<-df_jour2[c(1:3),]
+df_jour2_piedmont<-df_jour2[c(4:8),]
+
+df_jour3_coastal<-df_jour3[c(1:3),]
+df_jour3_piedmont<-df_jour3[c(4:8),]
+
+df_jour4_coastal<-df_jour4[c(1:3),]
+df_jour4_piedmont<-df_jour4[c(4:8),]
+
+
+##Combined Ecoregions
+df_coastal_plain_combined=bind_rows(df_jour1_coastal,df_jour2_coastal,df_jour3_coastal,df_jour4_coastal)
+df_piedmont_combined=bind_rows(df_jour1_piedmont,df_jour2_piedmont,df_jour3_piedmont,df_jour4_piedmont)
+
+```
+
+We are using the df_jour_whole_combined files for this section.
+cc_total is my predictor and leaf_litter_total is my response
+
+2) Plot the two against each other with a scatter plot. Do the data appear to be related linearly? (5 pts)
+
+
+```{r}
+
+ggplot(df_jour_whole_combined,aes(x=do_avg,y=temp_avg))+geom_point()+geom_smooth(method="lm",color="orange")
+
+#wb_sheets <- readxl::excel_sheets("journal_data1.xlsx") 
+#wb_sheets %>%
+  #purrr::map(function(sheet){ # iterate through each sheet name
+  #assign(x = sheet,
+         #value = readxl::read_xlsx(path = wb_source, sheet = sheet),
+         #envir = .GlobalEnv)
+#})
+
+```
+
+```
+Yes
+```
+
+
+3) Fit the linear model. View the summary. (5 pts)
+
+
+```{r}
+temp_do_model_fit<-lm(do_avg~temp_avg,data=df_jour_whole_combined)
+summary(temp_do_model_fit)
+```
+
+4) Does the summary make sense when you compare it to the plot you made? Does our model have good predictive power? Evaluate the residual standard error, intercept, and R-Squared in particular. Would you say your predictor predicts the response?  (10 pts)
+
+
+```
+Yes it is showing that average Do decreases as stream temperature increases. We see this with a negative estamates standard deviation.
+Based on the residual standard error is good as there is no bias in the data as the data seems to be evenly distributed between above and below the line. Looking at the adjusted R squared value we see that the increase in do_average is 65.53% explained by the decrease in average temperature.
+```
+
+
+5) Plot the model on the graph. Increase the size of the text so it is comfortably readable at 5 feet. Make sure axis labels are readable and not overlapping with one another. (5 pts)
+
+```{r}
+ggplot(df_jour_whole_combined,aes(x=do_avg,y=temp_avg))+geom_point()+geom_smooth(method="lm",color="orange")+ labs(x="Average Dissolved Oxygen (mg/L)",y="Average Stream Temperature (C)", title="Linear regression to predict Dissolved Oxygen")+annotate("text",x=12.5,y=27,label="R^2==0.6681",parse=T)+theme_bw()
+
+```
+
+
+6) Check the normality of the residuals. Do they look OK? Are we violating assumptions? (5 pts)
+
+```{r}
+model_fit<-lm(temp_avg~do_avg,data=df_jour_whole_combined)
+augmented_fit<-broom::augment(model_fit)
+qqnorm(augmented_fit$.resid)
+qqline(augmented_fit$.resid, col="red")
+shapiro.test(augmented_fit$.resid)
+
+##The p value of the Shapiro test has a P value of .09864 meaning that the residuals are NOT significantly different to a normal distribution
+```
+
+
+Why is normality of residuals important? 
+
+```
+They are important as they impact the validity of R square tests T tests and if they are shown to be non-normal we can not run tests like linear models which require the distribution to be normal.
+```
+
+7) If you are using `surveys_complete`: Is there interspecific variation in the linear model? Hint: look at our prior work with facet plots. (15 pts) 
+
+If you are *not* using  `surveys_complete`: Do you think there are groupings within your data that may have a separate linear model? Try grouping the data by that variable and redoing the lm. If this would not make sense for your data, you may also attempt to do multiple predictor variables. (15 pts)
+
+```{r}
+model_fit_eco<-lm(cpe~temp_avg+Ecoregion,data=master_df_jour_combined)
+summary(model_fit_eco)
+augmented_fit_eco<-broom::augment(model_fit_eco)
+qqnorm(augmented_fit_eco$.resid)
+qqline(augmented_fit_eco$.resid, col="red")
+shapiro.test(augmented_fit_eco$.resid)
+```
+
+## Part Two
+
+In this portion, you are free to use your own data if you have a categorical predictor variable and a response variable. Otherwise, you may use the columns sex and weight in `surveys_complete`
+
+1) First, plot the data grouped by sex (5 pts)
+
+```{r}
+ggplot(master_df_jour_combined,aes(x=Ecoregion,y=temp_avg,color=Ecoregion))+geom_jitter()+labs(x="Ecoregion",y="Average Temperature (C)")+theme(legend.position = "none")+stat_summary(fun.data="mean_se",color="black")
+
+```
+
+2) Try an ANOVA of this data (5 pt)
+
+```{r}
+model_fit_temp_eco<-lm(temp_avg~Ecoregion,data=master_df_jour_combined)
+anova_eco_temp<-aov(model_fit_temp_eco)
+summary(anova_eco_temp)
+```
+
+3) How about a linear model? What information does this give you that an ANOVA can't? (5 pts)
+
+
+```{r}
+model_fit_temp_eco<-lm(temp_avg~Ecoregion,data=master_df_jour_combined)
+summary(model_fit_temp_eco)
+```
+
+```
+The linear model offers an intercept value which indicates that the ecoregions are not significantly different. This means that I'm comparing like regions
+```
+
+3) Plot the lm with the data, with points colored by sex. (10 pts)
+
+
+```{r}
+ggplot(master_df_jour_combined,aes(x=Ecoregion,y=temp_avg))+geom_point()+geom_smooth(method="lm",color="darkgreen")+ labs(x="Ecoregion",y="Average Stream Temperature (C)", title="Linear regression to predict differenece in Stream Temp based on Ecoregion")+annotate("text",x=.65,y=27,label="R^2==0.000",parse=T)+theme_bw()
+```
+
+4) Choose any model we've looked at so far, but use two predictor variables. Perform an LM, plot the results, and state if this changes your interpretation of the relationship between variables (10 pts)
+
+```{r}
+temp_do_tds_model_fit<-lm(do_avg~temp_avg+tds_avg,data=master_df_jour_combined)
+summary(temp_do_tds_model_fit)
+```
+
+```{r}
+ggplot(master_df_jour_combined,aes(x=do_avg,y=temp_avg,color=tds_avg))+geom_point()+geom_smooth(method="lm",color="blue")+ labs(x="Average Dissolved Oxygen (mg/L)",y="Average Stream Temperature(C)", color="Average Total Dissolved Solids (ppt)", title="Avergae Dissolved oxygen plotted against Average Stream Temperature and TDS")+scale_color_distiller(palette= "Greens")+theme(legend.position="bottom")+annotate("text",x=11,y=27,label="R^2==0.6624",parse=T)+theme_bw()
+```
+
+```
+Not much here I found initally above that temperature has a strong affect on avg DO I was curious to see if TDS would give further predictive power.
+temp on DO= R2 0.6681
+temp~tds on DO= R2 0.6624
+```
+
+## Part Three
+
+
+1) Add and commit this document (5 pts)
+
+```
+#Commands here
+```
+
+2) Push your changes to github (10 pts)
+
+```
+#Commands here
+```
+
+
+
+# MS students
+
+My expectation is that you'll do this with your own data. If any part of this doesn't make sense with your data, please get in touch ASAP so we can work it out.
