@@ -180,13 +180,13 @@ temp~tds on DO= R2 0.6624
 1) Add and commit this document (5 pts)
 
 ```
-#Commands here
+# I used the Git pane. Clicked in the white box and hit commit from the tools tab after writing a note I hit commit
 ```
 
 2) Push your changes to github (10 pts)
 
 ```
-#Commands here
+# Still using the Git pane I pushed this document by clicking the white box and usign the push option of the tools tab. I then entered my user name and token
 ```
 
 
