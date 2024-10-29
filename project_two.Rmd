@@ -76,6 +76,7 @@ summary(temp_do_model_fit)
 ```
 Yes it is showing that average Do decreases as stream temperature increases. We see this with a negative estamates standard deviation.
 Based on the residual standard error is good as there is no bias in the data as the data seems to be evenly distributed between above and below the line. Looking at the adjusted R squared value we see that the increase in do_average is 65.53% explained by the decrease in average temperature.
+#AMW: So that's a relationship we should expect, eh? Cool. 
 ```
 
 
@@ -104,6 +105,7 @@ Why is normality of residuals important?
 
 ```
 They are important as they impact the validity of R square tests T tests and if they are shown to be non-normal we can not run tests like linear models which require the distribution to be normal.
+#AMW: But why? 
 ```
 
 7) If you are using `surveys_complete`: Is there interspecific variation in the linear model? Hint: look at our prior work with facet plots. (15 pts) 
