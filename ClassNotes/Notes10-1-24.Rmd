@@ -1,0 +1,61 @@
+---
+title: "Notes10-1-24"
+author: "Noah Irwin"
+date: "2024-10-01"
+output: html_document
+---
+
+
+
+
+##Class Workshop (works)
+ THE_function<-function(filepath,columns){
+     dataframe<-read_excel(filepath)
+    data<-dataframe %>% 
+         na.omit(dataframe) %>% 
+        pull(columns)
+    avg<-mean(data)
+    return(avg)
+}
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+THE_function(filepath_sgl1,"larva_sgls")
+
+###New workshop (Not working cant handle count)
+ Frequency_function<-function(filepath,column1,column2,column3){
+     dataframe<-read_excel(filepath)
+    data<-dataframe %>% 
+         na.omit(dataframe) %>%
+        col_1<-count(column1) %>% 
+        col_2<-count(column2) %>% 
+        col_3<-count(column3)
+       N_total<-col_1+col_2+col3{
+       if(col_2>0,col_3>0){
+       return(N_total)
+}else{
+Print("Column2 or column3 is empty.")
+}
+}
+    return(N_total)
+}
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+Frequency_function(filepath_sgl1,larva_sgls,meta_sgls,adult_rounded_sgls)
+
+###What could be useful (works but requires me to make a variable out of my dataframe first)
+Thesis_avg_function<-function(data,columns){
+    data<-data%>% 
+        na.omit(dataframe) %>% 
+        pull(columns)
+    avg<-mean(data)
+    return(avg)
+}
+
+Thesis_avg_function(athens_sgl_1,"larva_sgls")
+
+###Enter
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+
+THE_function(filepath_sgl1,"larva_sgls")
+
+
+Uploading code to github
+

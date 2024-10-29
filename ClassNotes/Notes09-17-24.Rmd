@@ -1,0 +1,57 @@
+---"
+title: "Notes09-17-24"
+author: "Noah Irwin"
+date: "2024-09-17"
+output: html_document
+---
+
+weight_boxplot<-ggplot(data=complete_surveys, mapping = aes(x=genus,y=weight))+geom_boxplot()+xlab("Genus")+ ylab("Weight (in g)")+scale_y_log10()+theme(axis.text.x = element_text(angle=45,hjust=1))
+spp_count_plot <- ggplot(data = yearly_counts, 
++                          mapping = aes(x = year, y = n, color = genus)) +
++     geom_line() + 
++     xlab("Year") + ylab("Abundance")
+
+allows you to show two graphs at once
+
+combined_plot<-grid.arrange(weight_boxplot,spp_count_plot,ncol=2,widths=c(4,6))
+ggsave("combined_plot.png",combined_plot)
+
+.png is a better file format as it keeps the image from being compressed
+
+
+####standard Deviation
+ surveys_sd <- surveys_complete %>% 
++     group_by(sex) %>%
++     summarize(mean=mean(hindfoot_length),
++               sd=sd(hindfoot_length))
+##creating a standard deviation on a boxplot
+wrong##
+ggplot(surveys_sd, aes(x=species_id, y=mean, fill=sex)) 
+geom_bar(stat="identity", color="black")
+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2)
+
+correct###
+> ggplot(surveys_sd, aes(x=species_id, y=mean, fill=sex)) + 
+   geom_bar(stat="identity", color="black", position=position_dodge()) +
+   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2, position=position_dodge(.9)) 
+   
+####Placing the errorbars
+   ## for 2 bars position=position_dodge(.9)) for 3 bars position=position_dodge(.6)) 
+   
+###Looking at one Genus
+   surveys_reduced<-surveys_complete %>% 
++ filter(genus=="Dipodomys")
+
+Plotting
+ggplot(data=surveys_reduced,mapping=aes(x=weight,y=hindfoot_length,color=sex))+geom_jitter(alpha=0.5)
+
+Naming each point
+ggplot(data=surveys_reduced,mapping=aes(x=weight,y=hindfoot_length,color=sex))+geom_jitter(alpha=0.5)+geom_text(hjust=-1,vjust=1)
+
+
+surveys_reduced$plot_type
+surveys_labeled<-surveys_reduced %>% 
++ mutate(type_label=plot_type=="Control") ##chceck to see if the plot_type is a control rat
+
+ggplot(data=surveys_labeled,mapping=aes(x=weight,y=hindfoot_length))+geom_jitter(alpha=.05)+geom_point(data=surveys_labeled[surveys_labeled$type_label=="TRUE",],color="pink",size=2)
+   

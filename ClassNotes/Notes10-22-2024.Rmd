@@ -1,0 +1,173 @@
+---
+title: "Notes10/22/2024"
+author: "Noah Irwin"
+date: "2024-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Great website to look at world wide distributions
+GBIF
+install.packages("rgbif")
+install.packages("leaflet")
+library(rotl)
+library(rgbif)
+library(leaflet)
+```{r}
+name_suggest("Atta mexicana")
+occurances<-occ_search(taxonKey=5035745,limit=20) #taxonKey was found as the key numebr after name_suggest
+occurances
+#We need decimal latitude and longitude
+```
+
+```{r}
+remove_nas<-occurances$data %>% 
+  select(scientificName,decimalLatitude,decimalLongitude) %>% 
+  drop_na()
+
+remove_nas
+```
+
+```{r}
+leaflet::leaflet(remove_nas) %>% 
+  addTiles() %>% 
+  addMarkers(~decimalLongitude,~decimalLatitude,popup=remove_nas$scientificName)
+```
+
+
+class assignment
+```{r}
+##creating a loop to do multiple
+class_map_animals<-c("dryophytes cinereus","Hyla cinerea","nerodia paucimaculata","nerodia harteri")
+search_results<-c()##shift enter
+for(herp in class_map_animals){ ###herp could have been anyword we are just giving a name to a single instance of dataframe<-c()
+  query<-name_suggest(herp,rank="genus")
+  search<-occ_search(taxonKey=query$data$key,limit=10)
+  print(search)
+}
+##Records found is all the records for them and records returned is the limit we entered in the occ_search
+
+```
+#next step
+```{r}
+##creating a loop to do multiple
+class_map_animals<-c("nerodia fasciata","nerodia clarkii","nerodia paucimaculata","nerodia harteri")
+search_results<-c()
+for(herp in class_map_animals){
+  query<-name_suggest(herp,rank="species")##needs a capital S to get rid of subspecies
+  search<-occ_search(taxonKey=query$data$key,limit=90) ##if multiple keys are present you can do =query$data$key[1],picks first key
+  search_results[[herp]]<-search$data
+}
+mega_df<-bind_rows(search_results,.id="column_label")
+mega_df
+
+```
+##Next Step
+
+```{r}
+remove_nas_mega<-mega_df %>%  ## $data was already done in the loop
+  select(scientificName,decimalLatitude,decimalLongitude) %>% 
+  drop_na()
+
+remove_nas_mega
+```
+##Mapping
+```{r}
+leaflet::leaflet(remove_nas_mega) %>% 
+  addTiles() %>% 
+  addMarkers(~decimalLongitude,~decimalLatitude,popup=remove_nas_mega$scientificName)
+
+
+```
+##Making Pretty
+```{r}
+levs <- factor(remove_nas_mega$scientificName)
+factpal <- colorFactor(topo.colors(8), levs)
+
+remove_nas_mega %>% 
+   group_by(scientificName) %>% 
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(~decimalLongitude,~decimalLatitude,popup=remove_nas_mega$scientificName) %>%
+  addCircleMarkers(
+    ~decimalLongitude,~decimalLatitude,clusterOptions = markerClusterOptions(), color = ~factpal(scientificName),
+    stroke = FALSE, fillOpacity = 0.5,popup=remove_nas_mega$scientificName)
+   
+
+###Phylopic for sillotes
+```
+
+Putting a phylogenie on the map
+
+```{r}
+#install.packages("phytools")
+#library()
+#[[1]] is the whoel string vector and the next step is picking the first name on the row
+split_names <- remove_nas_mega %>% 
+mutate(genus = map_chr(scientificName, function(s) strsplit(s, " ")[[1]][1]))%>% mutate(species = map_chr(scientificName, function(s) strsplit(s, " ")[[1]][2])) %>% 
+unite(col = genusSpecies, genus, species)
+
+#or you could
+
+test_cheat<-strsplit(remove_nas_mega$scientificName," ")
+genus_species_names<-c()
+for(name in test_cheat){
+  genus_species_names<-c(genus_species_names,paste0(name[1],"_",name[2]))# "_" splits them at the underscore
+}
+remove_nas_mega$GenusSpecies<-genus_species_names
+```
+
+```{r}
+reconciled_name<-rotl::tnrs_match_names(unique(split_names$genusSpecies))
+reconciled_name
+good_names<-reconciled_name %>% 
+drop_na()
+good_names
+```
+Making the tree
+```{r}
+tree<-rotl::tol_induced_subtree(good_names$ott_id,label="name")
+plot(tree)
+```
+
+making the tree and map talk to eachother
+```{r}
+only_lat_long<-split_names %>% 
+  select(decimalLatitude,decimalLongitude) %>% 
+  as.matrix()
+
+only_lat_long
+
+rownames(only_lat_long)<-split_names$genusSpecies
+```
+
+```{r}
+#install.packages("viridis")
+#library(viridis)
+#library(phytools)
+color_selection<-setNames(sample(viridis(n=Ntip(tree))),tree$tip.label)
+color_selection
+```
+
+```{r}
+##If there is an error
+#library(ape)
+tree<-multi2di(tree)
+plot(tree)
+
+##if there is an erro again
+tree$edge.length<-rexp(tree$Nnode*2)
+tree$edge.length
+
+plot_obj<-phylo.to.map(tree,only_lat_long)
+
+
+```
+cleaning up the plot
+
+```{r}
+plot(plot_obj,direction="rightwards",colors=color_selection,xlim=c(30,-30),ylim=c(40,-40),cex.points=c(0,1))
+```

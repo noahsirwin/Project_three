@@ -1,0 +1,35 @@
+---
+title: 'Homework Five: Functions'
+author: "April Wright"
+date: "2022-09-23"
+output: html_document
+---
+## Due date: Sept 29, 5 PM.
+
+This homework concerns functions.
+
+1. Make a function that reads in data and does some sort of manipulation of it. Undergrads, use the surveys dataset. Graduates, use your own data. Any manipulation is fine: selection, filtering, value removal. 
+
+```{r}
+
+# Answer here
+```
+
+2. Add a test to this function. How will you know if it worked, and alert a user if it did not?
+
+```{r}
+# Answer here
+```
+
+3. Make a function that makes a plot. This can be any type of plot that we covered. Violin, box, scatter. Include the ability to save the plot to a file in the function.
+
+```{r}
+# Answer here
+```
+
+4. For saving to a file, users of your function may want the ability to choose their file name. Make the filename an argument so that users can do so.
+
+```{r}
+# Answer here.
+
+```

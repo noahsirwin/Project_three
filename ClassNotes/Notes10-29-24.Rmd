@@ -1,0 +1,161 @@
+---
+title: "NOTES10-29-24"
+author: "Noah Irwin"
+date: "2024-10-29"
+output: html_document
+---
+
+install.packages("remotes")
+remotes::install_github("r-spatial/mapview")
+
+If you have a package that will not load properaly when installing you might have a problem where a busted directory was created and all future packages are trying to be downloaded to them. Mine looked like  this
+
+```
+Installing package into ‘/cloud/lib/x86_64-pc-linux-gnu-library/4.4’
+(as ‘lib’ is unspecified)
+ERROR: failed to lock directory ‘/cloud/lib/x86_64-pc-linux-gnu-library/4.4’ for modifying
+Try removing ‘/cloud/lib/x86_64-pc-linux-gnu-library/4.4/00LOCK-mapview’
+Warning message:
+In i.p(...) :
+  installation of package ‘/tmp/Rtmpc3XAF7/file14a1fb407e8/mapview_2.11.2.9000.tar.gz’ had non-zero exit status
+
+```
+copy the section of code that starts with    Try removing '---------'
+to address this problem go to the terminal tab of the console pane and paste in the section you copied:
+rm -r /cloud/lib/x86_64-pc-linux-gnu-library/4.4/00LOCK-mapview
+
+```{r}
+using<-function(...) {
+    libs<-unlist(list(...))
+    req<-unlist(lapply(libs,require,character.only=TRUE))
+    need<-libs[req==FALSE]
+    if(length(need)>0){ 
+        install.packages(need)
+        lapply(need,require,character.only=TRUE)
+    }
+}
+packagesInThisExercise <- c("tidyverse", "googlesheets4", "iNEXT", "fields", "sf", "mapview")
+using(packagesInThisExercise)
+
+
+```
+
+The Data Sheet
+```{r}
+library(tidyverse)
+library(googlesheets4)
+gs4_deauth()
+cam <- read_sheet("https://docs.google.com/spreadsheets/d/1esrbC-QqoufjlDHXtIYtDcsXovC_x6o6Z4JfBPKvg3s/edit?usp=sharing")
+```
+
+```{r}
+##Making names
+names(cam)<-make.names(names(cam),unique=TRUE)
+names(cam)
+
+cam$Species.Name<-str_replace_all(cam$Species.Name," ","_") ##replaces spaces with underscores 
+cam$Species.Name
+```
+
+
+Filtering out extra data
+```{r}
+speciesCount<-cam %>%
+  select(Species.Name,Count,Subproject) %>%
+  filter(Species.Name !="Calibration.Photos",
+        Species.Name !="Camera.Misfire",
+        Species.Name !="No.Animal",
+        Species.Name !="Camera.Trapper",
+        Species.Name !="Animal.Not.on.List",
+        Species.Name !="Vehicle",
+        Species.Name !="Homo.Sapiens") %>% 
+        group_by(Species.Name,Subproject) %>% 
+          summarize(totalCount=sum(Count)) %>% 
+          spread(Subproject,totalCount)
+
+speciesCount
+```
+
+Species Abundance
+```{r}
+abundance<-cam %>% 
+  group_by(Subproject) %>% 
+  summarize(SpeciesAbuncance=length(unique(Species.Name)))
+abundance
+```
+
+install.packages("iNext)
+
+```{r}
+speciesCount[is.na(speciesCount)]=0
+camDiv<-as.data.frame(speciesCount) ##Beacue iNext needs base R dataframes
+camDiv
+```
+
+```{r}
+rownames(camDiv)<-camDiv$Species.Name
+camDiv<-camDiv[2:6]
+camDiv
+```
+
+Species Richness
+```{r}
+##library(iNEXT)
+richness<-iNEXT(camDiv,q=0,datatype="abundance") ##calcualtes species richness q=0
+richness
+```
+
+Creating a species richness plot
+```{r}
+ggiNEXT(richness)+theme(legend.position="right")+theme_classic()
+
+#species density is richness on the y axis
+```
+
+Shannon diversity index  (Species Mixing)
+ calculating the proportion of the total individual that there were specific species 
+```{r}
+diversity_Shan <-iNEXT(camDiv,datatype = "abundance",q=1) ## q=1 is the shannon index
+ggiNEXT(diversity_Shan)+theme(legend.position = "right")+theme_classic()
+```
+
+Simpsons diversity index (Rarity)
+number organisms that belong to each species normalized by the total number of organisms
+0 is a lower probability that you will draw the same animal randomly 
+
+```{r}
+diversity_Simps <-iNEXT(camDiv,datatype = "abundance",q=2) ## q=2 is the Simpsons index
+ggiNEXT(diversity_Simps)+theme(legend.position = "right")+theme_classic()
+```
+
+```{r}
+allDiversity<-iNEXT(camDiv,q=c(0,1,2),datatype="abundance")
+ggiNEXT(allDiversity,facet.var="Order.q")+theme(legend.position="right")+theme(axis.text.x = element_text(colour="black",size=12,angle=45,hjust=.5,vjust=.05))+theme_classic ()
+```
+You should also consider how close some communties are to eachother. You migth be picking up transiant species
+ggpolt(cam,aes(x=Actual.Lon,y= Actual.Lat
+
+```{r}
+deployCount<-cam %>% 
+select(Species.Name,Count,Deployment.ID,Actual.Lon,Actual.Lat,Subproject) %>% 
+group_by(Deployment.ID,Actual.Lon,Actual.Lat,Subproject) %>% 
+  summarize(new_count=sum(Count))
+
+deployCount
+
+ggplot(deployCount)+geom_point(aes(x=Actual.Lon,y=Actual.Lat,size=new_count,color=Subproject),alpha=0.5)+theme_bw()
+```
+
+Maps Trnasfor,ing the corrdiantes the the proprityory form it needs
+```{r}
+##library(sf)
+deployCount_sf<-deployCount %>% 
+  st_as_sf(coords=c("Actual.Lon","Actual.Lat"),crs=4326)
+deployCount_sf
+```
+
+```{r}
+##library(mapview)
+camMap<-mapview(deployCount_sf,zcol="Subproject",cex="new_count",layer.name="Habitat.Type") ##zcol colors by "subproject"
+camMap
+```

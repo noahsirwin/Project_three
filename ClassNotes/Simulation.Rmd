@@ -1,0 +1,148 @@
+---
+title: Simulations
+authors: Jeremy M. Brown, April Wright, and Christina L. Kolbmann
+level: 2
+order: 1.0
+index: true
+redirect: false
+bibliography: references.bib
+---
+
+## Activity One
+
+See Moodle for the paper and link for the discussion activity.
+
+
+## Overview 
+
+This tutorial introduces the basic principles of simulations. The goal of simulations is multifold, as we covered in the paper. Today, we'll begin with the goal of assessing the fit between data generated from a model and data by answering the following question: __Could the model we've assumed plausibly have produced the data we observed?__
+
+Let's start with a very simple example. We're going to try and model a trait that differs between female and male animals. 
+
+## Introduction
+
+A good statistical model captures important features of observed data using relatively simple mathematical principles. However, a model that fails to capture some important feature of the data can mislead us. Therefore, it is important to not only compare the relative performance of models (i.e., model selection), but also to test the absolute fit of the best model [@Bollback2002; @Brown2014; @Brown2014a;  @Hoehna2018a; @BrownThomson2018]. If the best available model could not have plausibly produced our observed data, we should be cautious in interpreting conclusions based on that model. If the simulated data are similar to the observed, the model could reasonably have produced our observations. However, if the simulated data consistently differ from the observed, the model is not capturing some feature of the data-generating process.
+
+## An Example 
+
+ Here, we will examine a hypothetical dataset of trait values sampled from a sexually dimorphic population. However, for the purposes of our tutorial, we will say that we do not yet realize that sexual dimorphism exists. This example is discussed further in [@BrownThomson2018].
+
+<img src="figures/populationTraits.png"/>
+A set of trait values sampled from a population with sexual dimorphism.
+
+
+## A Single-Normal Model 
+
+Let's take a look at our observed trait data.
+
+```{r}
+library(tidyverse)
+birds <- read_csv("../data/birds.csv")
+ggplot(data = birds, mapping = aes(x=trait)) + geom_density()
+
+```
+
+### Discuss with a partner
+ 
++ What do you immediately notice about these data? 
+
+```
+#ANSWER here. Describe the data
+
+```
+
+```{r}
+
+norm_samples <- rnorm(10000, mean = 4.5)
+hist(norm_samples)
+```
+This is a normal distribution. Do the data look normal?
+
+```
+#ANSWER here
+
+```
+
+
+
+<img src="figures/postDensSurface_wSamples.png"/>
+Samples from the posterior distribution of the mean and standard deviation for a single Normal distribution.
+
+
+Based on one set of sampled parameter values (one of the dots in Figure 2), Figure 3 shows the resulting Normal distribution compared to the population trait data:
+
+<img src="figures/SingleNormal.png"/>
+
+A single Normal distribution fit to the population trait values (based on one draw of the mean and standard deviation sampled during MCMC).
+
+
+In this case, it is visually obvious that there are some important differences between the normal model we've assumed and the trait data. However, we'd like a quantitative method to assess this fit. Also, in the case of more complicated models and data like we typically encounter in phylogenetics, visual comparisons are often not possible.
+
+##  Simulation 
+
+Let's compare our values to a normal distribution. Above, we read in our data, and then generated 1000 samples from a normal. We can actually test if data come from a specific distribution using a test that we call the Kolmogorov–Smirnov test. This test will ask "What is the probability that these two sets of samples were drawn from the same (but *unknown*) probability distribution?" In our case, we do know one distribution - we just drew from a normal. If you were comparing two samples, you would not know this. 
+
+
+```{r}
+
+ks.test(x = birds, y = norm_samples) 
+
+```
+In this example, we give the `ks.test` x, our vector of observed bird traits. We also give it y, the distribution we'd like to test. In this case, we are interested in if this comes from a normal distribution. 
+
+For the KS-test, we are trying to reject the null hypothesis, which is that the samples come from the same distribution. Because we have a significant P-value, **we reject** the null. We have evidence that these values are not drawn from a normal distribution.
+
+As is shown on the below figure, we are sampling from a single normal. This is generating a normal distribution between our two peaks, rather than a two normals, each on one of our peaks.
+
+<img src="figures/posteriorPredictiveSimulation.png"/>
+
+Simulation of posterior predictive datasets (shown in light gray) by drawing samples of means and standard deviations from the posterior distribution.
+
+## Two Normal
+
+It's perhaps unsurprising that our data are poorly-described by a single normal distribution, given that they do not appear normally-distributed. Is it possible for us to compare the data we have to *two* normal distributions? 
+
+Yes, it is! This is possible via mixture modeling. Mixture modeling refers to a situation where we have two or more different distributions underlying the data, but we may not know _a priori_ which observation is from which. These are a commonly used class of models in ecology, evolution and behavior for their flexibility. One of the most common examples is Gamma-distributed rate variation in phylogenetics, in which characters in an alignment are classified based on how fast the characters evolve.
+
+First, we'll install the mixtools R package.
+
+```{r, eval = FALSE}
+install.packages("mixtools")
+library(mixtools)
+
+```
+
+Next, we'll use the `rnormmix` function to simulate data with two normal distributions. We want 1000 samples. For the other three variables, you're going to have to make some choices. Lambda represents what proportion of the sample belongs to each distribution. Lambdas are the means of the two distributions, and sigmas are the standard deviations. Take a look at the plot we made of the data before and see if you can eyeball some reasonable values for this. 
+
+```{r, eval = FALSE}
+mx_norm <- rnormmix(1000, lambda=c(.X,.X), mu=c(X, X), sigma=c(X,X))
+```
+
+
+Once you have your samples, take a quick peak at them:
+
+```{r, eval = FALSE}
+
+hist(mx_norm)
+
+```
+
+Do they look like the real data? Let's test that:
+
+```{r, eval = FALSE}
+ks.test(birds, mx_norm)
+
+```
+
+
+Can you reject the null that these data were drawn from the dual normal? 
+
+# Final activity
+
+For next week, we will be beginning to look at R packages and documentation. Therefore, we will need to have at least one function in our packages written. 
+
+Do it now. Show it to Basanta before you leave.
+
+
+
+# References

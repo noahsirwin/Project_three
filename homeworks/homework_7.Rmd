@@ -1,0 +1,31 @@
+---
+title: "Homework Seven"
+author: "April Wright"
+date: "10/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## 10 points, due Oct. 20 at 5 PM
+
+For your final project in this class, you will be making an R Package. It will consist of 5 functions that do the following:
+
++ A function to clean some data of your choice
++ A function to somehow manipulate, subset, or transform data
++ A statistical function (ANOVA, LM, other of your choosing)
++ A function that plots data
++ One for fun
+
++ MS/H-Option, one additional function pertaining to your research data.
+
+This week in class, you wrote one of your functions and added, committed and pushed it to GitHub. 
+
+Make  the remaining four .R files (five if you're an MS or H-Option student) in the scripts directory of your Lastname_pkg RStudio project. Title each one with what it will do. For example, if your function will make a histogram, title it "HistogramPlot.R" or something similar. Inside each, write a 1-2 sentence description of what the script will do. You do *not* need to write the function body now. I just want you to think carefully about what your functions will do, and I'd like to be able to see the types of things you're wanting to do.
+
+Add, commit, and push the four (or five if you're MS or H-Option) function files and the data to GitHub.
+
+

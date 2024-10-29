@@ -1,0 +1,126 @@
+---
+title: "Notes10-15-24"
+author: "Noah Irwin"
+date: "2024-10-15"
+output: html_document
+---
+Genetic Data
+
+##packages to install
+install.packages("devtools")
+library(devtools)
+devtools::install_github("ropensci/rotl")
+devtools::install_github("ropensci/traits")
+library(rotl)
+
+##Websites
+https://account.ncbi.nlm.nih.gov/
+Open tree of life website
+https://tree.opentreeoflife.org/opentree/argus/opentree15.1@ott93302
+
+
+apes<-c("Pongo","Pan","Gorilla","Hoolock","Homo")
+
+(resolved_names<-rotl::tnrs_match_names(apes)) ##Trys to find the varaible you named even if you spelled it wrong
+
+tr<-tol_induced_subtree(ott_ids=ott_id(resolved_names))
+```{r}
+nerodia<-c("nerodia fasciata","nerodia rhombifer","nerodia taxaspilota","nerodia clarkii","nerodia cyclopion")
+
+(resolved_names_nerodia<-rotl::tnrs_match_names(nerodia))
+
+tr<-tol_induced_subtree(ott_ids=ott_id(resolved_names_nerodia))
+
+plot(tr)
+```
+
+Getting an API KEY from the NCBI website
+found in account settings
+
+devtools::install_github("ropensci/rentrez", force= TRUE) ##Force can fix things if the package didnot download properly
+library(rentrez)
+set_entrez_key("92687996261488abe61f115cb1b2f5eaa008") ##("")Is the API key
+
+
+```{r}
+black_bear<-entrez_search(db="Nucleotide",term="Ursus americanus")
+black_bear$ids
+black_bear$count
+
+black_bear_nuke<-entrez_search(db="Nucleotide", term="Ursus americanus[ORGANISM]",retmax=20)
+black_bear_nuke
+black_bear_nuke$ids
+```
+
+retrieving specific sequences
+```{r}
+##"nuccore" is the database used when searching for nuclear data
+entrez_fetch(db="nuccore",id=black_bear_nuke$ids,retmax=1,rettype = "fasta") ##retmax limits the amount of data being downloaded
+#This only produces the first sequence not all 17
+
+
+```
+Grabbing Multiple
+
+```{r}
+for(id in black_bear_nuke$ids){
+  seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+  cat(seq,file="Bears_sequence.fasta",append=TRUE)
+}
+```
+
+Class assignment
+```{r}
+house_gecko_nuke<-entrez_search(db="Nucleotide", term="Hemidactylus turcicus[ORGANISM] AND COI")
+anoils_nuke<-entrez_search(db="Nucleotide", term="Anolis sagrei[ORGANISM] and COI")
+race_runner_nuke<-entrez_search(db="Nucleotide", term="Aspidoscelis sexlineatus[ORGANISM] and COI")
+slider_nuke<-entrez_search(db="Nucleotide", term="Trachemys scripta[ORGANISM] and COI")
+threetoe_amphiuma<-entrez_search(db="Nucleotide", term="amphiuma tridactylum[ORGANISM] and COI")
+
+##five_species<-c("Hemidactylus turcicus[ORGANISM]","Anolis sagrei[ORGANISM]","Aspidoscelis sexlineatus[ORGANISM","Trachemys scripta[ORGANISM],"amphiuma tridactylum[ORGANISM] and 18S[Gene Name]")
+```
+
+```{r}
+house_gecko_nuke$count
+anoils_nuke$count
+race_runner_nuke$count
+slider_nuke$count
+threetoe_amphiuma$count
+```
+
+```{r}
+##Works in the console
+for(id in house_gecko_nuke$ids){
+    seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+    cat(seq,file="sequence_fasta/five_sequence.fasta",append=TRUE)
+}
+
+for(id in anoils_nuke$ids){
+    seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+    cat(seq,file="sequence_fasta/five_sequence.fasta",append=TRUE)
+}
+
+for(id in race_runner_nuke$ids){
+    seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+    cat(seq,file="sequence_fasta/five_sequence.fasta",append=TRUE)
+}
+
+for(id in slider_nuke$ids){
+    seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+    cat(seq,file="sequence_fasta/five_sequence.fasta",append=TRUE)
+}
+
+for(id in threetoe_amphiuma$ids){
+    seq<-entrez_fetch(db="nuccore",id=id,retmax=1,rettype = "fasta")
+    cat(seq,file="sequence_fasta/five_sequence.fasta",append=TRUE)
+}
+```
+
+phylogenetic sequencing
+```{r}
+#install.packages("ape")
+#library(ape)
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install("msa")
+#library(msa)

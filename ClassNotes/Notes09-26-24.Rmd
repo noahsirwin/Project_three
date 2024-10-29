@@ -1,0 +1,109 @@
+---
+title: "Notes09-26-24"
+author: "Noah Irwin"
+date: "2024-09-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Circum_frog<-function(diameter){
++     radius<-(diameter/2)
++     circum<-2*3.14*(radius)
++     return(circum)
++ }
+
+With multiple numbers
+new_function<-function(number_0,number_1){
++     results<-number_0+number_1
++     results2<-results*number_1
++     results3<-results2/2
++     return(results3)
++ }
+> 
+
+In class assignment I did this one on my own!!
+class_function<-function(column_name){
++     selection<-surveys %>% 
++         select(column_name) %>% 
++     filter(!is.na(column_name))
++     view<-view(selection)
++ }
+> 
+
+
+Trying to make it avaialble for any dataframe
+ class_function2<-function(dataframe,column_name){
++       selection<-dataframe %>% 
++      select(column_name) %>% 
++       filter(!is.na(column_name))
++      view<-view(selection)
+return(selection)
+}
+class_function2(surveys,"weight")
+
+
+
+
+what she advised works as it actually has the na's removed
+ class_function2<-function(dataframe,column_name){
++       selection<-dataframe %>% 
++       filter(!is.na({{column_name}})) %>% 
+select({{column_name}}) %>% 
++      return<-(selection)
++ }
+class_function2(surveys,weight)
+
+
+Removing and displaying multiple columns
+cols<-c("hindfoot_length","weight")
+remove_nas<-function(data,columns){
++     clean<-data %>% 
++         na.omit(data) %>% 
++         select(all_of({{columns}}))
++     return(clean)
++ }
+remove_nas(surveys,cols)
+
+
+### Use is.numeric(surveys$weight) to see if the column is numeric
+
+crazy_great_function<-function(filepath,column){
+    dataframe<-read.csv(filepath)
+   selection <-dataframe %>% 
+      pull(column) %>% ###pull only grabs the values in that column 
+    numeric <- is.numeric(column)
+    avg<-mean(selection)
+    return(avg)
+    return(numeric)
+}
+filepath<-read.csv("data/surveys.csv")
+
+New Function
+
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+
+
+End of class example
+THE_function<-function(filepath,columns){
+dataframe<-read_excel(filepath)
+ data<-dataframe %>% 
+ pull(columns)
+avg<-mean(data)
+return(avg)
+}
+
+filepath_sgl1<-"thesis_project/First_collection_sgls.xlsx"
+
+THE_function(filepath_sgl1,"larva_sgls")
+
+###work shop (works)
+THE_function<-function(filepath,columns){
+dataframe<-read_excel(filepath)
+ data<-dataframe %>% 
+ na.omit(dataframe) %>% 
+ pull(columns)
+avg<-mean(data)
+return(avg)
+}

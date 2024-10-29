@@ -1,0 +1,83 @@
+---
+title: "Notes09-05-24"
+author: "Noah Irwin"
+date: "2024-09-05"
+output: html_document
+---
+> ggplot(data=surveys, mapping=aes(x=weight,y=hindfoot_length))+geom_point()
+> install.packages("hexbin")
+library(hexbin)
+ canvas<-ggplot(data=surveys, mapping=aes(x=weight,y=hindfoot_length))
+> canvas+geom_hex()
+
+canvas +geom_point(alpha=.1) ##munipulates opacity
+
+canvas +geom_point(alpha=.1,color="blue") ## adds color
+
+canvas +geom_point(alpha=.1, aes(color=species_id)) ##adds color to based on specific variables
+
+ggplot(data=surveys, mapping =aes(x=weight, y=hindfoot_length, color=species_id))+geom_point() ##condensed into one function
+
+ggplot(data=surveys, mapping =aes(x=weight, y=hindfoot_length, color=species_id))+geom_point()+geom_jitter() ### adds in unclutering plotsby spacing them out some
+
+##Assignment
+class_scatter<-ggplot(data=surveys,mapping=aes(x=species_id,y=weight,color=plot_type))+geom_point()
+
+###Trasitioning to surveys_complete
+ surveys_complete <- surveys %>%
++     filter(!is.na(weight),           # remove missing weight
++            !is.na(hindfoot_length),  # remove missing hindfoot_length
++            !is.na(sex))                # remove missing sex
+> class_scatter<-ggplot(data=surveys_complete,mapping=aes(x=species_id,y=weight,color=plot_type))+geom_point()
+
+###Box Plots
+> ggplot(data=surveys_complete,mapping=aes(x=species_id,y=weight))+geom_boxplot()
+
+ ggplot(data=surveys_complete,mapping=aes(x=species_id,y=weight))+geom_boxplot()+geom_jitter (alpha=0.3,color="red")
+ ###Violin plot
+> ggplot(data=surveys_complete,mapping=aes(x=species_id,y=weight))+geom_violin()
+
+##Manipulating Scale
+ ggplot(data=surveys_complete,mapping=aes(x=species_id,y=weight))+geom_boxplot() +scale_y_log10()
+###Class Assignment
+class_box<-ggplot(data=surveys_complete, mapping=aes(x=species_id,y=hindfoot_length, color=plot_type))+geom_boxplot()
+> class_box
+> class_box<-ggplot(data=surveys_complete, mapping=aes(x=species_id,y=hindfoot_length, color=plot_type))+geom_boxplot(color="yellow")
+
+###Finds how often a taxa was found in each given year
+surveys_complete %>% 
++ count(year,genus)
+# A tibble: 199 × 3
+    year genus               n
+   <dbl> <chr>           <int>
+ 1  1977 Chaetodipus         3
+ 2  1977 Dipodomys         222
+ 3  1977 Onychomys           3
+ 4  1977 Perognathus        22
+ 5  1977 Peromyscus          2
+ 6  1977 Reithrodontomys     2
+ 7  1978 Chaetodipus        23
+ 8  1978 Dipodomys         629
+ 9  1978 Neotoma            23
+10  1978 Onychomys          80
+# ℹ 189 more rows
+
+ ggplot(data=yearly_data,mapping=aes(x=year,y=n))+geom_line()
+ 
+ ###seperates them into different genus and gives them a unique color
+ ggplot(data=yearly_data,mapping=aes(x=year,y=n,color=genus))+geom_line()
+# ℹ Use `print(n = ...)` to see more rows
+
+###Seperates data by group without color
+ggplot(data=yearly_data,mapping=aes(x=year,y=n))+geom_line()+facet_wrap(facets=vars(genus))
+> 
+yearly_data_sex<- surveys_complete %>% 
++ count(year,genus,sex)
+ggplot(data=yearly_data_sex, mapping=aes(x=year,y=n,color=sex))+geom_line()+facet_wrap(facets=vars(genus))
+
+you can add a theme by +theme_ there are a lot of themes to choose from i like light,classic and linedraw
+###Assignment
+yearly_weight<-surveys_complete %>% 
++ group_by(year,genus) %>% 
++ summarize(avg_weight=mean(weight))
+ ggplot(data=yearly_weight,mapping=aes(x=year,y=avg_weight))+geom_line()+facet_wrap(vars(genus))
