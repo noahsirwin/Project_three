@@ -13,7 +13,7 @@ then enter
  git config --global user.email "noah.irwin@selu.edu"
  git config --global user.name "Noah Irwin"
 
-Goto tools
+Go to tools in the source pane
 project options
 check the left hand side
 choose git svn
