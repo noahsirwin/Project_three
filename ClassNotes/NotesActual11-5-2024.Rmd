@@ -1,0 +1,217 @@
+---
+title: "NotesActual11-5-2024"
+author: "Noah Irwin"
+date: "2024-11-05"
+output: html_document
+---
+```{r}
+ggplot(cam,aes(x=Actual.Lon ,y=Actual.Lat,color=Subproject))+geom_point()+theme_bw()
+```
+symmetric difference the number of unique groupings in a tree when comparing two trees
+summary statistic-some number that summarizes an individual or population
+
+11x        11x    4
+
+1x11       1x11   6
+
+11x        11x    4
+ordination display things spacially based on their summary statistics
+
+
+Bray curtis distance
+
+2->3
+minimum 
+crow 0
+sparrow 6
+tern 0
+robin 4
+blue Heron 0
+cardinal 0
+woodpeaker 0
+thrush 0
+minimum = 10  Cjk
+total # site 2 = 33  Sj
+total # site 3 = 16  Sk
+BCjk=1- (2*Cjk/Sj+Sk) = 1-.408= .60
+
+1->2
+BC=1.0
+
+the scale is 0-1    0=the exact same    1=completely different
+1->3
+minimum
+red wing 0
+crow 4
+red tail 0
+green hrn 0
+bl hrn 1
+sparrow 0
+tern 0
+robin 0
+
+minimum = 5 CjK
+total 1 =19
+total 3= 16
+BC= 1-.2857 ==.714
+
+install.package("vegan")
+library(vegan)
+```{r}
+speciesCount<-cam %>%
+  group_by(Common.Name,Subproject) %>% 
+  summarize(total=sum(Count)) %>% 
+  spread(Common.Name,total,fill=0)
+speciesCount
+
+```
+Vegan only works if it is in matrix format
+```{r}
+speciesMatrix<-data.matrix(speciesCount,rownames.force=unique(cam$Subproject))
+speciesMatrix
+```
+
+```{r}
+cam_trap_NMDS<-metaMDS(speciesMatrix)
+cam_trap_NMDS
+```
+its alright if stress is nearly zero this just means that the points adn their distances from each other are easily plotted 
+
+Plotting NMDS
+```{r}
+ordiplot(cam_trap_NMDS,type="n") #RUN THIS BEFORE ON ITS OWN
+orditorp(cam_trap_NMDS,display="sites",cex=1.25)  #sites comes from an object
+```
+
+pulling data out to put on ggplot
+```{r}
+data.scores=as.data.frame(scores(cam_trap_NMDS)$sites)
+data.scores
+#sites are in the order they appear in our original speciescount data base
+```
+plotting out now with ggplot
+
+```{r}
+names<-data.scores %>% 
+  mutate(Location=speciesCount$Subproject)
+names ##This reaplys the localtity names to our varaibales
+```
+
+```{r}
+ggplot(data=names, aes(x=NMDS1 ,y=NMDS2))+geom_point(size=4,aes(colour=Location))
+#you can plot this without an axis
+```
+
+on your own
+library(googlesheets4)
+```{r}
+gs4_deauth()##dont want to eb asked to sign into google when accessing publicllay available data
+nop <- read_sheet("https://docs.google.com/spreadsheets/d/18yhZcaiYt6llg84eZYrNEewuLP3xaEyxYQQN__RQ3_4/edit?usp=sharing")
+view(nop)
+```
+
+Who had the most Deer
+
+preparing data first
+```{r}
+names(nop)<-make.names(names(nop),unique=TRUE)
+names(nop)
+nop$Common.Name<-str_replace_all(nop$Common.Name," ","_") ##replaces spaces with underscores 
+nop$Species.Name<-str_replace_all(nop$Species.Name," ",".")
+nop$Subproject<-str_replace_all(nop$Subproject," ",".")
+nop$Subproject<-str_replace_all(nop$Subproject,"/",".")
+nop$Common.Name
+```
+
+
+check to see if there is variation
+```{r}
+num_deer<-nop %>% 
+  filter((Common.Name=="White-tailed_Deer"))%>% 
+  group_by(Deployment.Name)
+ggplot(num_deer,aes(x=Deployment.Name))+geom_bar()
+##Only five of the sites show up in the bar plot so we know there is a discrepancy in deer number per site
+```
+library
+```{r}
+deer_survey<-nop %>%
+  filter(Common.Name =="White-tailed_Deer") %>%  ## "==" find only  "!" leave out
+  group_by(Actual.Lat,Actual.Lon,Deployment.Name) %>% 
+  summarise(count=n())
+deer_survey  
+ggplot(deer_survey, aes(x=Actual.Lon, y=Actual.Lat,color=count,size=count)) + geom_point()
+```
+turning Deer survey into a usable base R dataframe
+```{r}
+speciesCount_dEER<-nop %>% 
+  select(Common.Name,Count,Deployment.Name) %>% 
+  group_by(Common.Name,Deployment.Name) %>% 
+  summarise(totalCount= sum(Count)) %>% 
+  spread(Deployment.Name,totalCount)
+
+
+speciesCount_dEER[is.na(speciesCount_dEER)]=0
+nopdiv<-as.data.frame(speciesCount_dEER)
+rownames(nopdiv)<-nopdiv$Common.Name
+nopdiv<-nopdiv[2:11] ##As there was a total or 10 camera traps so we need to do 11. This is because computers start counting at 1   camera 2 is the first camera trap column and we go to the last column wtih camera trap information 9
+```
+```{r}
+nop_iNEXT<-iNEXT(nopdiv,q=1,datatype = "abundance")
+nop_iNEXT
+```
+mapping
+```{r}
+ggiNEXT(nop_iNEXT)+theme(legend.position = "right")+theme_classic()
+```
+
+Place the shannon index unit into its own data frame
+```{r}
+
+df<-as.data.frame(nop_iNEXT$iNextEst$size_based)
+df
+###We only want the methods sections titled "observed"
+shannon_df_clean<-df %>% 
+ filter(Method=="Observed") %>%
+  select(Assemblage,qD) %>% 
+  rename("Deployment.Name"= Assemblage)
+
+shannon_df_clean
+```
+In order to plot this we need a few things Deployment.Name,Actual.Lat,Actual.lon as well as our shannon index information so we must join two dataframes
+```{r}
+shan_set<-full_join(shannon_df_clean,nop,by="Deployment.Name")
+shan_set
+```
+
+Plotting the information
+```{r}
+ggplot(shan_set,aes(x=Actual.Lon,y=Actual.Lat,color=qD))+geom_point(aes(alpha=.5,color=))+theme_bw()
+
+#You need a package 
+#install.packages("ggrepel")
+#library(ggrepel) this allows you to label individual points with the argument label= "" within ggplot()
+
+#labeling these points by Deployment.Name
+#ex.
+#ggplot(shan_set,aes(x=Actual.Lon,y=Actual.Lat,color=qD,label=Deployment.Name))+geom_point(aes(alpha=.5,color=))+theme_bw()
+
+```
+mapping
+```{r}
+north_coords<-shan_set %>% 
+  st_as_sf(coords=c("Actual.Lon","Actual.Lat"),crs=4326)
+
+camMap<-mapview(north_coords,zcol="qD",cex="qD",layer.name="qD",label="Deployment.Name")
+camMap
+
+##applies labels to the map by using a legend
+#we need another package
+#install.packages("leafem")
+#library(leafem)
+camMap_labeled<-mapview(north_coords,zcol="qD",cex="qD",layer.name="qD",label="Deployment.Name") %>% 
+  addStaticLabels(label=shan_set$Deployment.Name,noHide=TRUE,direction="auto",offset=c(0,10),textOnly=TRUE,textsize="12px")
+camMap_labeled
+```
+
+
+

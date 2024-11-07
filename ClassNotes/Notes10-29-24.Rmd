@@ -8,6 +8,7 @@ output: html_document
 install.packages("remotes")
 remotes::install_github("r-spatial/mapview")
 
+HELP::
 If you have a package that will not load properaly when installing you might have a problem where a busted directory was created and all future packages are trying to be downloaded to them. Mine looked like  this
 
 ```
@@ -24,6 +25,8 @@ copy the section of code that starts with    Try removing '---------'
 to address this problem go to the terminal tab of the console pane and paste in the section you copied:
 rm -r /cloud/lib/x86_64-pc-linux-gnu-library/4.4/00LOCK-mapview
 
+
+Starting the lesson
 ```{r}
 using<-function(...) {
     libs<-unlist(list(...))
