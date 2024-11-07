@@ -1,0 +1,89 @@
+---
+title: "Notes10-31-2024"
+output: html_document
+date: "2024-10-31"
+---
+install.packages("usethis")
+library(usethis)
+install.packages("devtools")
+library(devtools)
+
+ALL THIS CODE SHOULD ONLY BE LOADED IN THE CONSOLE TAB
+```{r}
+#create_package(".") makes the package in the location youa re currently at
+this should give you a Namespace title README and Vignettes
+##install() installs our project
+
+
+
+```
+Click the description file under project
+it now looks liek this
+Package: stack.bars
+Title: takes data and creates a staked bar plot
+Version: 0.0.0.9000
+Authors@R: 
+    person(given="Noah", family="Irwin",  email = "noah.irwin@selu.edu", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+License: MIT
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+
+```{r}
+##use_roxygen_md()
+
+#then open one of the R fucntions in the R folder
+#Then wehn you open it click the very beginning of line one. Then click the magic wand at the top and choose insert roxygen skeleton
+```
+the R fucntion should look liek this when fileld out
+
+#' Creates a stacked bar chart when given columns and a dataframe
+#'
+#' @param data The dataframe you want to use
+#' @param column1 The name of the first column of data applicable found in your dataframe
+#' @param column2 The name of the second column of data applicable found in your dataframe
+#' @param column3 The name of the third column of data applicable found in your dataframe
+#' @param graphname The name you want to give to the graph you are created by this function
+#'
+#' @return plot  A ggplot object of the posterior trace
+#' @export
+stack_function<-function(data,column1,column2,column3,graphname){
+  graph_data<-data %>%
+    select({{column1}},{{column2}},{{column3}}) %>%
+    gather(key=sgls, value=mm) %>%
+    mutate(rounded = round(mm)) %>%
+    group_by(rounded, sgls) %>%
+    summarize(count=n())
+  plot<-ggplot(data=graph_data,mapping=aes(x=rounded,y=count,fill=sgls))+geom_col(position = position_stack())+xlab("SGL's (mm)")+ylab("Frequency")
+  ggsave(graphname, width = 160, height = 80, units = "mm",dpi = 300)
+  return(graph_data)
+}
+```{r}
+#document()  creates a manual for every fucntion that has documentation
+#use_package("name of the package you used for a specific function")
+#use_pipe()
+```
+open man file in the project section
+
+do not edit the maunal file change the fucntion section and then reload to make changes
+
+```{r}
+##install() then choose 3
+```
+
+building a tutorital
+
+```{r}
+##use_vignette("purrfect","Project three functions")
+```
+
+check()
+this fucntion checks for a variety of errors in your R code functions
+
+installing packages from github
+
+```{R}
+devtools::install_github("noahsirwin/Project_three")
+
+```

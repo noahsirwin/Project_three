@@ -1,0 +1,7 @@
+#install.package("pkgdown")
+#library(pkgdown)
+
+```{r}
+#pkgdown::build_site()
+
+```
