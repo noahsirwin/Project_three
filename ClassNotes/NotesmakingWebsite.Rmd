@@ -3,5 +3,8 @@
 
 ```{r}
 #pkgdown::build_site()
-
+commit and push your docs file to github
+go to the settings tab on your Github repsoitrory and chosse pages
+re are depolying from our main branch and docs folder
+hit save
 ```

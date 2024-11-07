@@ -3,6 +3,8 @@ title: "Thesis Functions and Variables"
 output: html_document
 date: "2024-10-01"
 ---
+install.packages("readxl")
+library(readxl)
 
 ##Collection 1 sheets
 athens_sgl_1<-readxl::read_excel("data/First_collection_sgls.xlsx", na = c("NA", ""),sheet="athens1")
