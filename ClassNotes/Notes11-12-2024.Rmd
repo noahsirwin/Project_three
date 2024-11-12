@@ -1,0 +1,51 @@
+---
+title: "Notes11-12-2024"
+author: "Noah Irwin"
+date: "2024-11-12"
+output: html_document
+---
+
+birds<-read.csv(data/birds.csv)
+```{r}
+ggplot(birds,aes(x=trait))+geom_density()+theme_bw()
+```
+
+
+```{r}
+#creating a normal unimodal distribution
+norm_samples<-rnorm(100,4.5) # 100 samples and map them to a mean of 4.5
+hist(norm_samples)
+norm_sample_thous<-rnorm(1000,4.5)
+hist(norm_sample_thous)
+```
+
+```{r}
+mean(birds$trait,na.rm=TRUE)
+ks.test(x=birds,y=norm_sample_thous) #this shows that the birds data is significantly different than the norm_sample. We see this as the p value is below .05 so this data is not a unimodal distribution.
+```
+
+```{r}
+#Mixture Models
+#install.packages("mixtools")
+#library(mixtools)
+
+mx_norm<-rnormmix(10000,lambda = c(.5,.5),mu=c(3,4.6),sigma=c(.25,.25)) #we established it as normal first and then we drew 10000 
+#.5,.5 says its split evenly in half between the modes. 
+#3,4.6 is the expected mean within each mode
+#might be good to collect the sigma from our real data set and apply it to the sigma
+mx_norm
+hist(mx_norm)
+
+###you can make this run trimodal distributions if you give it three values at lambda  mu and  sigma
+```
+
+checking agisnt our bimodal distribution
+```{r}
+ks.test(birds,mx_norm)
+#not quite a normal bimodal distribution
+```
+
+```{r}
+#creating a two mode distribution
+
+```
