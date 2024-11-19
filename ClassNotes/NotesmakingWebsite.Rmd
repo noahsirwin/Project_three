@@ -4,7 +4,15 @@
 ```{r}
 #pkgdown::build_site()
 commit and push your docs file to github
-go to the settings tab on your Github repsoitrory and chosse pages
-re are depolying from our main branch and docs folder
+go to the gray settings tab on the top of your Github repsoitrory and chosse pages on the left menu
+source are depolying from our main branch and docs folder
 hit save
 ```
+
+when updating the website
+
+devtools::document() ##Adds to the NAMESPACE file  #### This makes your functions available
+
+go to the build tab in the top right pane and hit install
+
+pkgdown::build_site() ## Push to github
