@@ -5,7 +5,7 @@
 #' @param column2 The second column of data you want to sum
 #' @param column3 The third column of data you want to sum
 #'
-#' @return the total number of enteries from your chosen columns
+#' @return the total number of entries from your chosen columns
 #' @export
 Frequency_function<-function(data,column1,column2,column3){
   col_1<-data %>%

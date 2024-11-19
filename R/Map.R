@@ -1,5 +1,24 @@
-Creating a map using Lat and Lon
+#' Creates a map from an excel sheet containing three columns latitude,longitude,locality
+#'
+#' @param data The dataframe of interest
+#' @param column1 Longitude
+#' @param column2 Latitude
+#' @param column3 Locality
+#' @return A map from the Leaflet function
+#' @export
+mapping_function<-function(data,column1,column2,column3){
+  mapping_data<-data %>%
+    select({{column1}},{{column2}},{{column3}}) %>%
+    group_by({{column3}}) %>%
+    na.omit() %>%
+    mutate(Actual_lon=as.integer({{column1}})) %>%
+    mutate(Actual_lat=as.integer({{column2}}))
 
-This function will be able to create a map from an excell sheet containing two columns and the names of my 7 sites
-column 1  column 2     column 3
-Latitude  Longitude   Site.Name
+  map<-leaflet::leaflet(mapping_data) %>%
+    addTiles() %>%
+    addMarkers(~Actual_lon,~Actual_lat,popup=mapping_data$column3)
+  return(map)
+}
+
+
+

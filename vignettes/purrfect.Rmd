@@ -1,5 +1,5 @@
 ---
-title: "Project three functions"
+title: "Project Three Functions Tutorial"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Project three functions}
@@ -13,7 +13,81 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+## Introducing the Purrfect package
++ This package was created as the final project of an R course. 
++ It's purpose is to aid me in the analysis and plotting of my thesis data. 
++ This includes generating averages, frequencys, linear regressions, and plots. 
++ This package works with any data frame that has been read into R. 
+
+## Installation Instructions
 
 ```{r setup}
+devtools::install_github("noahsirwin/Project_three")
 library(purrfect)
+```
+
+## Where to get the data
+```{r}
+library(readxl)
+library(googlesheets4)
+library(readxl)
+gs4_deauth()
+Thesis_Data_Table_for_R_and_Figures<-readxl::read_excel("../data/Thesis Data Table for R and Figures.xlsx")
+```
+## Using the Thesis_avg_function
+```{r eval=FALSE, warning=FALSE}
+Thesis_avg_function<-function(data,columns){
+  data<-data%>%
+    na.omit(dataframe) %>%
+    pull(columns)
+  avg<-mean(data)
+  return(avg)
+}
+```
+
+## Using the stack_function
+```{r eval=FALSE, warning=FALSE}
+stack_function<-function(data,column1,column2,column3,graphname){
+  graph_data<-data %>%
+    dplyr::select({{column1}},{{column2}},{{column3}}) %>%
+    tidyr::gather(key=sgls, value=mm) %>%
+    dplyr::mutate(rounded = round(mm)) %>%
+    dplyr::group_by(rounded, sgls) %>%
+    dplyr::summarize(count=n())
+  plot<-ggplot2::ggplot(data=graph_data,mapping=aes(x=rounded,y=count,fill=sgls))+ggplot2::geom_col(position = position_stack())+xlab("SGL's (mm)")+ylab("Frequency")
+  ggplot2::ggsave(graphname, width = 160, height = 80, units = "mm",dpi = 300)
+  return(graph_data)
+}
+```
+
+## Using the Frequency_function 
+```{r eval=FALSE, warning=FALSE}
+Frequency_function<-function(data,column1,column2,column3){
+  col_1<-data %>%
+    dplyr::select({{column1}}) %>%
+    na.omit() %>%
+    count()
+  col_2<-data %>%
+    dplyr::select({{column2}}) %>%
+    na.omit() %>%
+    count()
+  col_3<-data %>%
+    dplyr::select({{column3}}) %>%
+    na.omit() %>%
+    count()
+  N_total<-col_1+col_2+col_3
+  if(col_2>0 | col_3>0){
+    return(N_total)
+  }else{
+    message(paste("Column2 or Column3 is empty.", col_1))
+  }
+}
+```
+
+## Using Function 4
+```{r eval=FALSE, warning=FALSE}
+```
+
+## Using Function 5
+```{r eval=FALSE, warning=FALSE}
 ```

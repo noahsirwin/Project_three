@@ -223,3 +223,78 @@ wb_sheets <- readxl::excel_sheets("data/"".xlsx")
 df_"" = bind_rows("data_frame", .id="Sheet")                                                   
 df_""
 
+
+##Mapping Function
+```{r}
+mapping_function<-function(data,column1,column2,column3){
+  mapping_data<-data %>% 
+    select({{column1}},{{column2}},{{column3}}) %>%
+    group_by({{column3}}) %>% 
+    na.omit() %>% 
+    mutate(Actual_lon=as.integer({{column1}})) %>% 
+    mutate(Actual_lat=as.integer({{column2}}))
+  
+  map<-leaflet::leaflet(mapping_data) %>%
+      addTiles() %>% 
+      addMarkers(~Actual_lon,~Actual_lat,popup=mapping_data$column3)
+  return(map)
+  
+}
+    
+    #map<-leaflet::leaflet(mapping_data) %>%
+      #addTiles() %>% 
+      #addMarkers(~{{column1}},~{{column2}},popup=mapping_data$column3)
+  #return(function_map)
+
+  #mapcoords<-mapping_data %>% 
+    #st_as_sf(coords=c("Actual_lon","Actual_lat"),crs=4326)
+  
+  #function_map<-mapview(mapcoords,zcol="Locality",cex="Locality",layer.name="Locality",label="Locality") %>%  
+  #addStaticLabels(label=mapping_data$Locality,noHide=TRUE,direction="auto",offset=c(0,10),textOnly=TRUE,textsize="12px")   
+  
+  
+
+```
+##Input
+mapping_function(data=Thesis_Data_Table_for_R_and_Figures,column1=Actual_lon,column2=Actual_lat,column3=Locality)
+
+
+##Mapping toolshed
+north_coords<-shan_set %>% 
+  st_as_sf(coords=c("Actual.Lon","Actual.Lat"),crs=4326)
+
+camMap_labeled<-mapview(north_coords,zcol="qD",cex="qD",layer.name="qD",label="Deployment.Name") %>% 
+  addStaticLabels(label=shan_set$Deployment.Name,noHide=TRUE,direction="auto",offset=c(0,10),textOnly=TRUE,textsize="12px")
+camMap_labeled  
+
+camMap<-mapview(deployCount_sf,zcol="Subproject",cex="new_count",layer.name="Habitat.Type") ##zcol colors by "subproject"
+
+
+##Linear_function
+```{r}
+Linear_function<-function(data,x=column1,y=column2){
+     linear_dataframe<-data %>% 
+         select({{column1}},{{column2}}) %>% 
+         na.omit() %>%
+         model_fit<-lm({{column2}}~{{column1}},) %>% 
+             summary<-summary(model_fit) %>% 
+             return(summary)
+ }
+
+```
+
+##Input linear_function
+Linear_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl)
+
+###Input Linear Plot function
+```{r}
+Linear_plot_function<-function(data,x=column1,y=column2,xlab=text1,ylab=text2,title=text3,label=text4){
+line_plot<-ggplot(data,aes(x={{column1}},y={{column2}}))+geom_point()+geom_smooth(method="lm",color="black",size=0.5,fill="gray")+ labs(x="{{text1}}",y="{{text2}}", title="{{text3}}")+annotate("text",x=20,y=28,label="{{text4}}",parse=T)+theme_bw()
+  return(line_plot)
+}
+```
+###Input Linear Plot function
+Linear_plot_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl,xlab="Avg temperature(celcius)",ylab="Avg Size SGL(mm)",title="Linear regression to predict salamander size",label="R^2==0.966")
+
+
+
