@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 ## Installation Instructions
 
 ```{r setup}
-devtools::install_github("noahsirwin/Project_three")
+devtools::install_github("noahsirwin/Project_three") ##Gives me token problems
 library(purrfect)
 ```
 
