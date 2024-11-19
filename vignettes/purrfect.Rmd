@@ -20,8 +20,14 @@ knitr::opts_chunk$set(
 + This package works with any data frame that has been read into R. 
 
 ## Installation Instructions
+<<<<<<< HEAD
 ```{r}
 devtools::install_github("noahsirwin/Project_three")
+=======
+
+```{r setup}
+devtools::install_github("noahsirwin/Project_three") ##Gives me token problems
+>>>>>>> 301334e... Updated purrfect.Rmd
 library(purrfect)
 ```
 
