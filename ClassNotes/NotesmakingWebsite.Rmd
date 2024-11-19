@@ -9,7 +9,10 @@ source are depolying from our main branch and docs folder
 hit save
 ```
 
-when updating the website
+when updating the website you need to include the packages required for your package to work this can be accomplished by using this function
+install.packages("usethis")
+library(usethis)
+use_package() jsut include the name of the package within
 
 devtools::document() ##Adds to the NAMESPACE file  #### This makes your functions available
 

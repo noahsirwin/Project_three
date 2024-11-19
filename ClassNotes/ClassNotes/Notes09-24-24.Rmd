@@ -1,0 +1,126 @@
+---
+title: "Notes09-24-24"
+author: "Noah Irwin"
+date: "2024-09-24"
+output: html_document
+---
+
+How to add a download file into an R instance
+
+Click upload in the tab in thebottom right pane then click "choose file" then navigate to your files click them and then click "Ok"
+
+You can then click the csv or xlsx file and click import data and then okay they will download it immediatly
+
+Combine data sheets
+temp<-read_csv("data/Butterfly_data.csv")
+rainfall<-read_csv("data/Butterfly_moisture.csv")
+
+joining
+left_join gives privacy and causes everything that is included in the left to be included
+
+full_join adds the columns missing in either forms while also updating every colmun with the uniques of each data set. They do not duplicate data found in both data sets
+
+butterfly_joined<-full_join(rainfall,temp,by=c("ButterflySpecies"))##c("") indicates which column they are joined on
+butterfly_joined<-full_join(rainfall,temp,by=c("ButterflySpecies","Year","Day"),relationship = "many-to-many")
+###many-many can create false data points if the above columns are the exact same for multipule entries.
+You can solve this problemsif there was a record Id column to help give them something different
+
+reading Logs
+log1<-read_delim("data/Kaitie_log1.log",delim="\t")
+delim="\t" indicates that in this file the data is seperated by a tab. Computer generated sets tend to sepreate data by tab so this is how you read those log properly.
+
+
+Adding columns to a spreadsheet
+log1<-log1 %>% 
++ mutate(Treatment="Control")
+> log2<-log2 %>% 
++ mutate(Treatment="Treatment")
+
+Adding them together
+combined<-rbind(log1,log2)
+
+Used to verify we stacked them correctly ##We know they worked as we have two types of Treatments 
+ggplot(combined, aes(x=Treatment,y=`speciation_rate[1]`,color=Treatment))+geom_boxplot()
+
+Looking at things across multiple columns
+
+ combined %>% 
++ select(Treatment,starts_with("t[")) %>% ##Starts_with is selecting every column whose name starts with t[]
++ group_by(Treatment) %>% 
++ summary()
+
+install.packages("reshape2")
+library(reshape2)
+
+data_modified<-combined %>% 
++ select(Treatment,starts_with("t[")) %>% 
++ melt(id.vars="Treatment")###asssigns the treatemnt to a row
+
+ggplot(data_modified)+geom_boxplot(aes(x=variable,y=value,color=Treatment))
+##You can plot by putting the information in the geom_ section too
+
+downloading and uploading google sheets and excell
+Whole structure is the work book the under ones are spread sheets
+install_packages("googlesheets4")
+library(googlesheets4)
+gs4_deauth()##needed to be inculded to access a public datasheet
+raw_data <- read_sheet("https://docs.google.com/spreadsheets/d/1uSPKCKFpNMmbbKvqf0W4P2SPSB3xu68LOJkdFOEaFNM/edit?usp=sharing")
+Creating separate data varaibles seperating them by sheet
+utrecht <- read_sheet("https://docs.google.com/spreadsheets/d/1uSPKCKFpNMmbbKvqf0W4P2SPSB3xu68LOJkdFOEaFNM/edit?usp=sharing")
+
+zurich <- read_sheet("https://docs.google.com/spreadsheets/d/1uSPKCKFpNMmbbKvqf0W4P2SPSB3xu68LOJkdFOEaFNM/edit?usp=sharing",sheet="Zurich")
+
+erlangen <- read_sheet("https://docs.google.com/spreadsheets/d/1uSPKCKFpNMmbbKvqf0W4P2SPSB3xu68LOJkdFOEaFNM/edit?usp=sharing",sheet="Erlangen")
+
+combined_butterflies<-rbind(utrecht,zurich,erlangen)
+ggplot(combined_butterflies,aes(x=Day,y=Cumulative_Rain,color=Site))+geom_jitter(width=3)
+
+
+excell
+install.packages("readxl")
+library(readxl)
+zurich<-readxl::read_excel("data/butterly_data_by_Site.xlsx",sheet="Zurich")
+follow the same steps in the google sheets section
+
+
+CREATING FUNCTIONS
+function_name<-function(arguments){}
+function_name<-function(arguments){output_value<-argument_to_do_something+return(output_value)}
+
+shift+enter allows you to put spaces between your curved bracket
+calc_shrub_vol<-function(length,width,height){
+  volume<-length*width*height
+  return(volume)
+}
+
+Has set the default argument that if not included height will be 1.0
+calc_shrub_vol<-function(length=1.0,width,height){
++     volume<-length*width*height
++     return(volume)
++ }
+
+est_mass_shrub<-function(volume){
++     mass<-2.65*volume^0.9
++     return(mass)
++ }
+
+link them together
+shrub_mass<-calc_shrub_vol(.8,1.6,2.4) %>% 
++ est_mass_shrub()
+> shrub_mass
+
+or internaly
+
+est_shrub_mass_dim<-function(length,width,height){
++     volume<-calc_shrub_vol(length,width,height)
++     mass<-est_mass_shrub(volume)
++     return(mass)
++ }
+
+In class assignment
+remove_butter<-function(Remove){
++     dataf<-read_butter
++     dataf<-dataf %>% 
++         drop_na()
++     return(dataf)
++ }

@@ -1,0 +1,10 @@
+---
+title: "Notes10-17-24"
+author: "Noah Irwin"
+date: "2024-10-17"
+output: html_document
+---
+```{r}
+results<-entrez_search
+
+```

@@ -1,0 +1,117 @@
+---
+title: "Notes10-8-24"
+author: "Noah Irwin"
+date: "2024-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+crabs<-read.csv("data/crabs.csv")
+ggplot(crabs,aes(x=carapace_length,y=body_depth))+geom_point()
+model_fit<-lm(body_depth~carapace_length,data=crabs) ##the first is what we expect to be predicted so the response variable the second is what is influencing that response. The first is the dependent variable and the second is the independent variable
+ summary(model_fit)
+#The residulas are the distance between the points and the line
+If you have a high level of residuals above the line than below the line the there is bias. This happens as the line describes the middle data and below data well but not the above data
+
+#the coefficients estiamte shows that with every 1 mm of carapace length increase you would expect the body depth to increase by .473 mm
+
+##the residual standard error shows with the difference of the points to the line, So if half was above and half was below it would be 0. The residulas  are absolute valued so standard error will always be positive
+
+##This test does generate a rsquare. The percentage of the repsonse that can be explained by the predictor.
+
+```{r}
+ggplot(crabs,aes(x=carapace_length,y=body_depth))+geom_point()+geom_smooth(method="lm",color="navy",size=0.5,fill="deeppink")+ labs(x="Carapace Length (mm)",y="Body Depth (mm)", title="linear regression to predict crab body depth")+annotate("text",x=20,y=28,label="R^2==0.966",parse=T)+theme_bw()
+
+```
+##The pink glow was the confidence interval
+
+##use broom as a sanity check to ensure that fitted + residual equals the actually predicted variable (the farthest left variable)
+
+```{r}
+broom::augment(model_fit)
+
+augmented_fit<-broom::augment(model_fit)
+qqnorm(augmented_fit$.resid)
+qqline(augmented_fit$.resid, col="red")
+
+```
+
+```{r}
+##model_fit<-lm(body_depth~carapace_length,data=crabs)
+##broom::augment(model_fit)
+##augmented_fit<-broom::augment(model_fit)
+##qqnorm(augmented_fit$.resid)
+
+ shapiro.test(augmented_fit$.resid)
+##A p-value is .004169 meanind that the the residulas are significantly different to a normal distribution
+##We can no longer run linear models with this data.
+```
+
+```{r}
+ggplot(crabs,aes(x=sex,y=body_depth,color=sex))+geom_jitter()
+##this plot shows that there is equal variance between the treatments
+
+model_fit_sex<-lm(body_depth~sex,data=crabs)
+summary(model_fit_sex)
+##the average female body depth is expected to be 13.724.  sexM is the difference bewteen the baseline sex of female adn the expected male size. Males are expected to be larger as they are a positive number but this is not the case as the Pr P-VALUE is nonsignificant.
+
+ggplot(crabs,aes(x=sex,y=body_depth,color=sex))+geom_jitter()+labs(x="SEX",y="Body depth (mm)")+theme(legend.position = "none")+stat_summary(fun.data="mean_se",color="black")
+##the mean standard deviation for each sex overlaps meaning there are is no deviation between the sexs
+```
+
+Running an ANOVA
+```{r}
+anova_model_fit<-aov(model_fit)
+summary(anova_model_fit)
+
+```
+Multiple predictor variables
+```{r}
+
+model_fit_color<-lm(body_depth~color+carapace_length,data=crabs)
+summary(model_fit_color)
+##Colororange means that when controling for carpace length you will see an increase in size of 1.044 in orange crabs compared to the baseline color of blue. Blue is baseline beacuse "B" comes first int he aphabet
+
+augmented_fit_color<-broom::augment(model_fit_color)
+summary(augmented_fit_color)
+
+qqnorm(augmented_fit_color$.resid)
+qqline(augmented_fit_color$.resid,col="red")
+shapiro.test(augmented_fit_color$.resid)
+```
+
+```{r}
+ggplot(crabs,aes(x=carapace_length,y= body_depth,color=color))+geom_point()+labs(x="Carapace Length (mm)",y="Body Depth (mm)",color="Crab Color")+scale_color_manual(values=c("blue","orange"))+geom_smooth(method="lm")+annotate("text",x=20,y=28,label="R^2==0.988",parse=T)
+###on the annotate() the x and y are the cordiantes fro where the annotation will be placed ont he figure. The graph knew which data set was orange and blue because blue comes first in the alphabet. So be sure to order your colors based ont he letter of the alphabet your varaibales start with.
+```
+
+Multiple numerical predictors
+```{r}
+model_fit_front<-lm(body_depth~carapace_length+frontal_lobe,data=crabs)
+summary(model_fit_front)
+##Intercept is body_depth when frontal lobe and carapace length are 0
+#carpace_length shows the growth expected in body depth when frontal_lobe stays constant and carapace_length increases
+##frontal lobe carapace lenght stays same and depth increases as frontal lobe increases
+
+ggplot(crabs,aes(x=carapace_length,y=body_depth,color=frontal_lobe))+geom_point(size=2)+labs(x="Carapace length (mm)", y="Body Depth (mm)",color="Frontal Lobe (mm)")+scale_color_distiller(palette= "Reds")+theme(legend.position="bottom")
+?scale_color_distiller
+```
+
+Interaction effects
+```{r}
+model_fit_interact<-lm(body_depth~carapace_length*color,data=crabs)
+summary(model_fit_interact)
+##If you have a significant interaction then you can no longer run a linear model as they are not independent from each other.
+
+ggplot(crabs,aes(x=carapace_length,y= body_depth,color=color))+geom_point()+labs(x="Carapace Length (mm)",y="Body Depth (mm)",color="Crab Color")+scale_color_manual(values=c("blue","orange"))+geom_smooth(method="lm")+annotate("text",x=20,y=28,label="R^2==0.988",parse=T)
+```
+##Two catagorical predictors plus an interaction plot
+```{r}
+crabs %>% 
+group_by(sex,color) %>% 
+summarize(mean_body_depth=mean(body_depth)) %>% 
+ggplot(aes(x=sex,y=mean_body_depth,color=color))+geom_point()+geom_path(aes(group=color))+scale_color_manual(values=c("blue","orange"))
+
+```

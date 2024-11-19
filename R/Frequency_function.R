@@ -10,16 +10,16 @@
 Frequency_function<-function(data,column1,column2,column3){
   col_1<-data %>%
     dplyr::select({{column1}}) %>%
-    na.omit() %>%
-    count()
+    tidyr::na.omit() %>%
+    dplyr::count()
   col_2<-data %>%
     dplyr::select({{column2}}) %>%
-    na.omit() %>%
-    count()
+    tidyr::na.omit() %>%
+    dplyr::count()
   col_3<-data %>%
     dplyr::select({{column3}}) %>%
-    na.omit() %>%
-    count()
+    tidyr::na.omit() %>%
+    dplyr::count()
   N_total<-col_1+col_2+col_3
   if(col_2>0 | col_3>0){
     return(N_total)

@@ -1,0 +1,196 @@
+---
+title: "ClassNotes"
+author: "Noah Irwin"
+date: "2024-08-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here are my notes from class 08-22-2024
+"<-" is the assignment variable
+"something" assigns the variable to something
+if you see + thta means that R is asking for more info
+R studio doesnt want names to start with numbers
+Cntrl+L clears the consule pane
+A vector is a one deminsional grouping of objects lists and vectors may be used interchangable
+
+to get to another lien when in {} hit shift + enter
+for (weight in weight_g){
+print(weight/1000)
+}
+For each weight divide the weight in the "For loop" by 1000
+
+## Variables
+A variable is soemthing R holds in Memory. You can makea variable like so:
+```{r}
+weight_kg <- 50
+```
+
+## Vectors
+Vectors are list like grouping of objects. A vector looks like this:
+```{r}
+weight_g <- c(50,60,65,70,80,90)
+weight_g
+```
+
+## Varibale Reassignment
+```{r}
+mass <- 47.5
+mass <- mass * 2.2 #I am reassigning mass to be in lbs
+```
+
+## Class
+type class (animls) or class (weight_g) to ensure that you have them correctly organized as either numerical or character
+
+> weight
+[1] 90
+> weight_g
+[1] 50 60 65 70 80 90
+> weight_g <- c(weight_g, 90)
+> weight_g
+[1] 50 60 65 70 80 90 90
+ can be used to add a number to a previous list
+ 
+ ## And/Or 
+  weight_g
+[1] 30 50 60 65 70 90 90
+> weight_g[weight_g >50| weight_g >70]
+[1] 60 65 70 90 90
+> weight_g[weight_g <50| weight_g >70]
+[1] 30 90 90
+> ##| is the "or" symbol    & is the "and" symbol
+
+## TO REMOVE NAs when you need an average
+heights <- c(2,4,4,NA,6)
+> mean(heights)
+[1] NA
+> mean(heights, na.rm = TRUE)
+
+## Entering Surveys as a Vector
+head(surveys[, "species_id"])
+
+## Entering Surveys as a data frame
+head(surveys["species_id"])
+
+## Challange 
+> surveys_200 <- surveys [200,]
+> surveys_200
+    record_id month day year plot_id species_id sex hindfoot_length
+200     35212    12   7 2002       2         NL   M              33
+    weight   genus  species   taxa plot_type
+200    248 Neotoma albigula Rodent   Control
+> nrows(surveys)
+Error in nrows(surveys) : could not find function "nrows"
+> nrow(surveys)
+[1] 34786
+> surveys[34786]
+Error in `[.data.frame`(surveys, 34786) : undefined columns selected
+> surveys[34786,]
+      record_id month day year plot_id species_id sex hindfoot_length
+34786     30986     7   1 2000       7         PX                  NA
+      weight       genus species   taxa        plot_type
+34786     NA Chaetodipus     sp. Rodent Rodent Exclosure
+
+##or
+surveys_last <- surveys[nrow(surveys),]
+> surveys_last
+      record_id month day year plot_id species_id sex hindfoot_length
+34786     30986     7   1 2000       7         PX                  NA
+      weight       genus species   taxa        plot_type
+34786     NA Chaetodipus     sp. Rodent Rodent Exclosure
+> 
+> 
+> nrow(surveys)
+[1] 34786
+> 34786/2
+[1] 17393
+> survey(17393)
+Error in survey(17393) : could not find function "survey"
+> survey[17393,]
+Error: object 'survey' not found
+> surveys[17393,]
+      record_id month day year plot_id species_id sex hindfoot_length
+17393      9828     1  19 1985      14         AB                  NA
+      weight      genus   species taxa plot_type
+17393     NA Amphispiza bilineata Bird   Control
+> mid_survey <-surveys[17393,]
+> mid_survey
+      record_id month day year plot_id species_id sex hindfoot_length
+17393      9828     1  19 1985      14         AB                  NA
+      weight      genus   species taxa plot_type
+17393     NA Amphispiza bilineata Bird   Control
+> or
+surveys[nrow(surveys)/2,]
+
+##creating and standardizing dates
+ ymd('1982-1-1')
+[1] "1982-01-01"
+> paste(surveys$year,surveys$month,surveys$day, sep = "-")
+generates a new date colume in the survey
+surveys$date<-ymd(paste(surveys$year,surveys$month,surveys$day, sep = "-"))
+
+##Filtering the 129 not parsed
+summary(surveys$date)
+summary(surveys$date)
+        Min.      1st Qu.       Median         Mean      3rd Qu. 
+"1977-07-16" "1984-03-12" "1990-07-22" "1990-12-15" "1997-07-29" 
+        Max.         NA's 
+"2002-12-31"        "129" 
+##Adding NAs
+> surveys[is.na(surveys$date),c("year","month","day")]
+sex<-factor(c("male","female","male","female"))
+> levels (sex)
+[1] "female" "male"  
+> nlevels(sex)
+[1] 2
+> sex<-factor(sex,levels=c("male", "female"))
+> sex
+[1] male   female male   female
+Levels: male female
+> plot(as.factor(surveys$sex))
+> levels(surveys$sex)
+NULL
+> surveys$sex <-addNA(surveys$sex)
+> surveys$sex
+   [1] M M             M     M M M M   M M M M F F F F F F F M M M F M
+  [33] M M F M F F M F F F F F F M F F F F F F M M M F F M F M F F F F
+  [65] F M F F F M F M F M M M M M M F M F M F M M M F M F F M F M F F
+  [97] F M M M M M M F M F F F F F F F F M M M F F F F F M M M M M M M
+ [129] M M M F F F M F M M F M F F F F F F   F M F F M F M M M F F F M
+ [161] F F F F F   F F M F F   M F F M F M F F F M F F F F F F F   M M
+ [193] F F F F F M M M F F M M M M M M F F M M F F M F M M M M M M M F
+ [225] M F M M M F M M M M M F M M F M F M M M F F F F F F F F F F F M
+ [257] M F F M F F F F M M F M M F M M F M F F M F F F F F F F F F M F
+ [289] F M M F M M M F M M F F F F F F M M M F F M M F M M M M F F M M
+ [321] F M M M M M M M M M M M M M M M M F F M M M F F F F M M M F M F
+ [353] M M M M M M M F F M M M M F M M M   M F M F M M M F M F M M F M
+ [385] F M F M F M F M F M F M M M M M F M M M F F F M F M F M M F M F
+ [417] F F F F F M F M F F M F F F M F F F F M F F F F F M M F F F F F
+ [449] F F F F F F F F F F F F F F F M F F M M F M F M M F M M F F M F
+ [481] M F F M M F M F M M M F M M M M F M F M M M M M M M M F M M F M
+ [513] F M F M F F M M M F M M F M M F   F F F M M M M M M F M F M M F
+ [545] M M F M F F M F F M M F M M M F F M M M F F F F M F F F M F M M
+ [577] M F M M M M M M M M M M M M M M M M M M M M M F M F M M F M F F
+ [609] F F F F F M M M M M F M M F M M M F M F F M F M M M F M F F M M
+ [641] F F F M M F F M F M M F F M F M M F F F M F M F M M M M F M M M
+ [673] M M M M M M M M F M F M M M M F M M M M M M M F M F M M F M M M
+ [705] M M M F M M M M F M M M M M F M M M M M M M F M F M M M M M M F
+ [737] M F F F F F F F M F M M F M F M M M F M F F M M F F M M F F F M
+ [769] M F F F F F F M M M F M   F F F M M M M F F F M M M F F M M   M
+ [801] F M F M M M F F M M M M F M M F F F M M M   M F M F M F M M M M
+ [833] M M F M F M M F M F M F M M F M F F M M F F M M F M M M M M F M
+ [865] M F M F F M F F M M M F M M F M F M M M F M M M F F F F F M F M
+ [897] F M F M F M F M F F M M M F F M F F M F F M M F F F M M F M M M
+ [929] F M M M M M F M F M F M F M F F F M M M M M F M M M F M M M M F
+ [961] F F F M M F F M F F F F M M F M M M F M M M M F M M   M M F F M
+ [993] F F F M F F M F
+ [ reached getOption("max.print") -- omitted 33786 entries ]
+Levels:  F M <NA>
+> sex<-as.factor(surveys$sex)
+> levels(sex)[1]<- "undetermined"
+> plot(sex)
+
+##New command cntrl+shift+m = %>% (pipe)

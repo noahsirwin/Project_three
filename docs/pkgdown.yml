@@ -2,6 +2,5 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  Notes11-5-2024: Notes11-5-2024.html
   purrfect: purrfect.html
-last_built: 2024-11-07T20:31Z
+last_built: 2024-11-19T21:30Z

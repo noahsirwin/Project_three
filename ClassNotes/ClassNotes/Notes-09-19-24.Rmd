@@ -1,0 +1,10 @@
+---
+title: "Notes09-19-24"
+author: "Noah Irwin"
+date: "2024-09-19"
+output: html_document
+---
+
+download.file("https://raw.githubusercontent.com/BiologicalDataAnalysis2019/2024/main/vignettes/project_one.Rmd",destfile="projects/project_one/project_one.Rmd")
+
+download.file("https://raw.githubusercontent.com/BiologicalDataAnalysis2019/2023/main/projects/project_one/FossilAnts.csv",destfile="projects/project_one/FossilAnts.csv")

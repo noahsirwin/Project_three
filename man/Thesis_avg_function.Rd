@@ -12,7 +12,7 @@ Thesis_avg_function(data, columns)
 \item{columns}{The column that you wish to average}
 }
 \value{
-the average of the column in interger form
+the average of the column in integer form
 }
 \description{
 Averages the data in a given column

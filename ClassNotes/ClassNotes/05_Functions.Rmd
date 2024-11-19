@@ -1,0 +1,299 @@
+---
+title: Functions and repeatability
+author: April Wright; Borrows heavily from Ethan White's semester long biology course
+minutes: 90
+---
+
+
+```{r}
+
+library(tidyverse)
+surveys <- read_csv("data/portal_data_joined.csv")
+```
+
+### Functions enable repeatability
+
+* How many of you have done something so far in the semester, and then forgotten it later? Let's discuss how to make code more permenant, reusable and readable
+    * Informative variable names
+    * Consistent indentation and line spacing
+    * Good commenting
+    * Functions
+* Write reusable code.
+    * Concise and modular script
+    * Functions with general structure 
+
+### Understandable chunks
+
+* Human brain can only hold ~7 things in memory at a given time.
+    * Write programs that don't require remembering more than ~7 things at once.
+* What do you know about how `sum(1:5)` works internally?
+    * Nothing.
+    * What do you think it does?
+    * Test your idea. Were you right? 
+* All functions should work as a single conceptual chunk, labeled in a logical way so that you don't have to remember what it does.
+
+### Reuse
+
+* Want to do the same thing repeatedly?
+    * Inefficient & error prone to copy code
+    * Even worse to rewrite it every time!
+    * If it occurs in more than one place, it will eventually be wrong somewhere.
+* Functions are written to be reusable.
+
+### Function basics
+
+```
+function_name <- function(inputs) {
+  output_value <- do_something(inputs)
+  return(output_value)
+}
+```
+
+```
+calc_shrub_vol <- function(length, width, height) {
+  volume <- length * width * height
+  return(volume)
+}
+```
+
+* Creating a function doesn't run it.
+* Call the function with some arguments.
+
+```
+calc_shrub_vol(0.8, 1.6, 2.0)
+shrub_vol <- calc_shrub_vol(0.8, 1.6, 2.0)
+```
+
+* Walk through function execution (using debugger)
+    * Call function
+	* Assign 0.8 to length, 1.6 to width, and 2.0 to height inside function
+	* Calculate volume
+	* Send the volume back as output
+	* Store it in `shrub_vol`
+
+* Treat functions like a black box.
+    * Can't access a variable that was created in a function
+        * `> width`
+        * `Error: object 'width' not found`
+    * 'Global' variables can influence function, but should not.
+        * Very confusing and error prone to use a variable that isn't passed in
+          as an argument
+
+## Exercise:
+> Type the name of a function that we have already used in  class to view the source code of the function. Can you tell what the expected inputs and outputs of the function are?
+
+
+
+### Default arguments
+
+* Defaults can be set for common inputs.
+
+```
+calc_shrub_vol <- function(length = 1, width = 1, height = 1) {
+  volume <- length * width * height
+  return(volume)
+}
+
+calc_shrub_vol()
+calc_shrub_vol(width = 2)
+calc_shrub_vol(0.8, 1.6, 2.0)
+calc_shrub_vol(height = 2.0, length = 0.8, width = 1.6)
+```
+
+### Named vs unnamed arguments
+
+* When to use or not use argument names
+
+```
+calc_shrub_vol(height = 2.0, length = 0.8, width = 1.6)
+```
+
+Or
+
+```
+calc_shrub_vol(2.0, 0.8, 1.6)
+```
+
+* You can always use names
+    * Value gets assigned to variable of that name
+    * Remember the 7 things we can hold in memory?
+* If not using names then order determines naming
+    * First value is `height`, second value is `length`...
+    * If order is hard to remember use names
+* In many cases there are *a lot* of optional arguments
+    * Convention to always name optional argument
+
+
+### Combining Functions
+
+* Each function should be single conceptual chunk of code
+* Functions can be combined to do larger tasks in two ways
+
+* Calling multiple functions in a row
+
+```
+est_shrub_mass <- function(volume){
+  mass <- 2.65 * volume^0.9
+}
+
+shrub_mass <- est_shrub_mass(calc_shrub_vol(0.8, 1.6, 2.0))
+
+library(dplyr)
+shrub_mass <- calc_shrub_vol(0.8, 1.6, 2.0) %>%
+  est_shrub_mass()
+```
+
+* Calling functions from inside other functions
+* Allows organizing function calls into logical groups
+
+```
+est_shrub_mass_dim <- function(length, width, height){
+  volume = calc_shrub_vol(length, width, height)
+  mass <- est_shrub_mass(volume)
+  return(mass)
+}
+
+est_shrub_mass_dim(0.8, 1.6, 2.0)
+```
+
+## Consistency 
+
+We ran into some trouble Tuesday. I had defined each of my functions a couple times. And in so doing, I ended up with extra arguments to some functions and none to others.
+
+
+```{r}
+
+calc_vol <- function(len = 1, width = 10, height = 1){
+volume <- len * width * height
+return(volume)
+}
+
+
+calc_mass <- function(vol){
+mass <- 2.65 * vol^.9
+return(mass)
+}
+
+calc_den <- function(len, width, height){
+vol <-  calc_vol(len, width, height)
+mass <- calc_mass(len)
+density <- mass/vol
+return(density)
+}
+
+calc_den(len = 2, width = 3, height = 4 )
+
+```
+
+
+
+## More complex functions
+
+So far, we've looked at situations where we are providing one or a few arguments to a function. But what about situations where we want to be able to use functions to process our data in more complex ways? 
+
+We may want to select data from a data frame inside a function. We can do that like so:
+
+```{r}
+
+remove_nas <- function(data){
+  clean <- data %>%
+     na.omit(data) %>%
+     select(weight)
+   return(clean)
+}
+
+remove_nas(surveys)
+```
+
+But is this a good thing? This function will allow us to select one and only one column. We call this practice *hardcoding*. It makes our code inflexible - what if we want other data? We would have to edit the code itself. In general, we want to make as few changes to our code as possible. Every change introduces the chance to make a mistake.
+
+So, we can change our code a little bit to make it more flexible. We can, for example, make it so that the user tells the function what code they want. We do this by placing the column in the function body in curly braces. This tells R to prepare to accept user input. See the below:
+
+```{r}
+
+remove_nas <- function(data, column){
+  clean <- data %>%
+     na.omit(data) %>%
+     select({{column}})
+   return(clean)
+}
+
+remove_nas(surveys, hindfoot_length)
+
+
+```
+After you have run the above, you will see that we can now choose a column based on what we provide in the function call. Very handy!
+
+## Exercise:
+> We may want multiple columns of data. How can we make a function flexible to multiple columns? There are two possible solutions to this issue. Look at each of the below and see if you can figure out how they work. Discuss with a partner the pros and cons of each solution. 
+
+```{r}
+#Solution One
+remove_nas <- function(data, column, column1){
+  clean <- data %>%
+     na.omit(data) %>%
+     select({{column}}, {{column1}})
+   return(clean)
+}
+
+remove_nas(surveys, hindfoot_length, weight)
+
+# Solution Two
+cols <- c("hindfoot_length", "weight")
+remove_nas <- function(data, columns){
+  clean <- data %>%
+    na.omit(data) %>%
+    select(all_of({{columns}}))
+  return(clean)
+}
+```
+
+
+## Testing
+
++ How can we know what we've done is good? 
++ How could you verify that a number is right?
+  + What about our density? What must be true of it? 
+  + Generic vs. specific
++ What about non-numerics?
+  + Write some function to clean data.
+  
+  
+## Functions from class
+
+```{r}
+
+calc_density <- function(length, width, height){
+  volume <- calc_vol(length, width, height)
+  mass <- calc_mass(volume)
+  density <- mass/volume 
+  if (density < volume){
+      return(density)
+  } else {
+    print("Density impossibly large! Check your math.")
+  }
+}
+
+calc_density <- function(length, width, height){
+  volume <- calc_vol(length, width, height)
+  mass <- calc_mass(volume)
+  density <- mass/volume 
+  density <- round(density, 3)
+  if (is.double(density)){
+    return(density)
+  } else {
+    print("Density impossibly large! Check your math.")
+  }
+}
+
+data_cleaning <- function(filepath){
+  data_raw <- read_csv(filepath)
+  data_clean <- data_raw %>% 
+    drop_na()
+  if (sum(is.na(d_c)) == 0){
+    return(data_clean)
+  } else {
+    print("NAs still present!")
+  }
+} 
+```

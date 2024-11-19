@@ -16,7 +16,7 @@ Frequency_function(data, column1, column2, column3)
 \item{column3}{The third column of data you want to sum}
 }
 \value{
-the total number of enteries from your chosen columns
+the total number of entries from your chosen columns
 }
 \description{
 Title Generates the total number of samples of multiple columns

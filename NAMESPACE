@@ -2,6 +2,8 @@
 
 export("%>%")
 export(Frequency_function)
+export(Linear_plot_function)
 export(Thesis_avg_function)
+export(mapping_function)
 export(stack_function)
 importFrom(magrittr,"%>%")

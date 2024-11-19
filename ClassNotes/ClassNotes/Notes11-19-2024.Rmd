@@ -1,0 +1,11 @@
+---
+title: "Notes11-19-2024"
+output: html_document
+date: "2024-11-19"
+---
+
+Making a tutorial
+
+pkgdown::buildsite()
+
+for when you alter something in your package and need to push it to your website

@@ -1,0 +1,103 @@
+---
+title: "Tables.Rmd"
+author: "April Wright"
+date: "2023-08-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Communicating Results
+
+```{r include=FALSE}
+library(tidyverse)
+install.packages("DT")
+library(DT)
+surveys <- read_csv("../data/portal_data_joined.csv")
+```
+
+
+We don't just do data analysis to do it. Usually, we need to share it with someone else. Whether that is a member of a lab, our boss, the general public, we need to be able to communicate results effectively. Most people probably do not want to look at data the way we've been looking for it.
+
+The purpose of this notebook is to look at making tables prettier. We want to enable whoever we're talking to to turn the data we have and the analysis we've done into insights. 
+
+Let us consider this case. You are designing a new trapping experiment out at the Portal, Arizona field site. You want to know what types of animal in- and exclosures are catching in the most animals
+
+```{r}
+
+surveys  %>% 
+  na.omit() %>% 
+  group_by(plot_type) %>% 
+  filter(species_id == "NL") %>% 
+  count()
+```
+
+We've seen this before. It looks fine. It gets the message across. We can, however, make it look a little nicer:
+
+```{r echo=TRUE}
+
+table <- surveys  %>% 
+  na.omit() %>% 
+  group_by(plot_type) %>% 
+  filter(species_id == "NL") %>% 
+  count()
+
+knitr::kable(table )
+```
+
+We can make a few edits to display more intuitive labeling:
+
+```{r echo=TRUE}
+
+table <- table %>% 
+  rename_at('plot_type', ~'Experimental Treatment')
+
+table <- table %>% 
+  rename_at('n', ~'Number Sampled')
+
+knitr::kable(table)
+```
+
+These are some viable options for small tables. Let's think about bigger tables. Big things are hard to look at. Let's get a good, but not overwhelming, amount of data.
+
+```{r}
+
+data_for_table <- surveys %>% 
+  na.omit() %>% 
+  select(species_id, weight, year) %>% 
+  group_by(year) %>% 
+  summarize(mean_weight = mean(weight)) %>% 
+  arrange()
+data_for_table
+```
+
+
+We can try a visual with kable. 
+```{r}
+
+data_for_table <- surveys %>% 
+  na.omit() %>% 
+  select(species_id, weight, year) %>% 
+  group_by(year) %>% 
+  summarize(mean_weight = mean(weight)) %>% 
+  arrange()
+knitr::kable(data_for_table)
+```
+
+This isn't bad - it at least allows us to scroll and look at things. The `DT` package, however, allows us to look very comfortably at these data. We can even search!
+
+```{r}
+
+data_for_table <- surveys %>% 
+  na.omit() %>% 
+  select(species_id, weight, year) %>% 
+  group_by(year) %>% 
+  summarize(mean_weight = mean(weight)) %>% 
+  arrange()
+DT::datatable(data_for_table)
+```
+Even looking at surveys isn't so painful with datatable. It's a real memory hog, though, so don't everyone do it at once. 
+
+
