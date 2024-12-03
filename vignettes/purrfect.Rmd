@@ -32,7 +32,8 @@ library(readxl)
 library(googlesheets4)
 library(readxl)
 gs4_deauth()
-Thesis_Data_Table_for_R_and_Figures<-readxl::read_excel("../data/Thesis Data Table for R and Figures.xlsx")
+download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/Thesis%20Data%20Table%20for%20R%20and%20Figures.xlsx", "/cloud/project/data/Thesis_Data_Table_for_R_and_Figures.xlsx")
+download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/First_collection_sgls.xlsx","/cloud/project/data/First_collection_sgls.xlsx")
 ```
 
 ## Using the Thesis_avg_function
@@ -44,6 +45,11 @@ Thesis_avg_function<-function(data,columns){
   avg<-mean(data)
   return(avg)
 }
+```
+
+## Example Average function Input
+```{r}
+Thesis_avg_function(athens_sgl_1,"larva_sgls")
 ```
 
 ## Using the stack_function
@@ -59,6 +65,11 @@ stack_function<-function(data,column1,column2,column3,graphname){
   ggplot2::ggsave(graphname, width = 160, height = 80, units = "mm",dpi = 300)
   return(graph_data)
 }
+```
+
+## Example Stack function input
+```{r}
+stack_function(data=athens_sgl_4,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls,graphname="data/plots/athens_sgl_4_plot.png")
 ```
 
 ## Using the Frequency_function 
@@ -85,6 +96,11 @@ Frequency_function<-function(data,column1,column2,column3){
 }
 ```
 
+## Example Frequency function
+```{r}
+Frequency_function(data=athens_sgl_1,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls)
+```
+
 ## Using the mapping_function
 ```{r eval=FALSE, warning=FALSE}
 mapping_function<-function(data,column1,column2,column3){
@@ -102,6 +118,11 @@ mapping_function<-function(data,column1,column2,column3){
 }
 ```
 
+## Example Mapping function input
+```{r}
+mapping_function(data=Thesis_Data_Table_for_R_and_Figures,column1=Actual_lon,column2=Actual_lat,column3=Locality)
+```
+
 ## Using the Linear_plot_function
 ```{r eval=FALSE, warning=FALSE}
 Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2",title="text3",label="text4"){
@@ -112,4 +133,9 @@ Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2
   line_plot<-ggplot2::ggplot(data,aes(x={{x}},y={{y}}))+ggplot2::geom_point()+ggplot2::geom_smooth(method="lm",color="black",size=0.5,fill="gray")+ labs(x=xlab_label,y=ylab_label, title=title_label)+annotate("text",x=20,y=28,label=chart_label,parse=T)+theme_bw()
   return(line_plot)
 }
+```
+
+##Example Linear Plot function input
+```{r}
+Linear_plot_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl, xlab="Avg temperature(celcius)",ylab= "Avg Size SGL(mm)" ,title="Linear regression to predict salamander size" ,label= "R^2==0.966")
 ```
