@@ -58,7 +58,93 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-What the package does (one paragraph).
+<div class="section level1">
+<div class="page-header"><h1 id="thesis-r-package">Thesis R Package<a class="anchor" aria-label="anchor" href="#thesis-r-package"></a>
+</h1></div>
+<div class="section level2">
+<h2 id="an-r-package-used-to-analyze-and-plot-my-data">An R Package used to analyze and plot my data<a class="anchor" aria-label="anchor" href="#an-r-package-used-to-analyze-and-plot-my-data"></a>
+</h2>
+<div class="section level3">
+<h3 id="author-noah-irwin">Author: Noah Irwin<a class="anchor" aria-label="anchor" href="#author-noah-irwin"></a>
+</h3>
+</div>
+</div>
+<div class="section level2">
+<h2 id="introducing-the-purrfect-package">Introducing the Purrfect package<a class="anchor" aria-label="anchor" href="#introducing-the-purrfect-package"></a>
+</h2>
+<ul>
+<li>This package was created as the final project of an R course.</li>
+<li>It’s purpose is to aid me in the analysis and plotting of my thesis data.</li>
+<li>This includes generating averages, frequencies, linear regressions, and plots.</li>
+<li>This package works with any data frame that has been read into R.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="installation-instructions">Installation Instructions<a class="anchor" aria-label="anchor" href="#installation-instructions"></a>
+</h2>
+<p><code>{r setup} devtools::install_github("noahsirwin/Project_three") ##Gives me token problems library(purrfect)</code></p>
+</div>
+<div class="section level2">
+<h2 id="where-to-get-the-data">Where to get the data<a class="anchor" aria-label="anchor" href="#where-to-get-the-data"></a>
+</h2>
+<p><code>{r} library(readxl) library(googlesheets4) library(readxl) gs4_deauth() download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/Thesis%20Data%20Table%20for%20R%20and%20Figures.xlsx", "/cloud/project/data/Thesis_Data_Table_for_R_and_Figures.xlsx") download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/First_collection_sgls.xlsx","/cloud/project/data/First_collection_sgls.xlsx")</code></p>
+</div>
+<div class="section level2">
+<h2 id="using-the-thesis_avg_function">Using the Thesis_avg_function<a class="anchor" aria-label="anchor" href="#using-the-thesis_avg_function"></a>
+</h2>
+<p><code>{r eval=FALSE, warning=FALSE} Thesis_avg_function&lt;-function(data,columns){   data&lt;-data%&gt;%     filter(!is.na({{columns}})) %&gt;%     pull({{columns}})   avg&lt;-mean(data)   return(avg) }</code></p>
+</div>
+<div class="section level2">
+<h2 id="example-average-function-input">Example Average function Input<a class="anchor" aria-label="anchor" href="#example-average-function-input"></a>
+</h2>
+<pre><code><span><span class="fu"><a href="reference/Thesis_avg_function.html">Thesis_avg_function</a></span><span class="op">(</span><span class="va">athens_sgl_1</span>,<span class="va">larva_sgls</span><span class="op">)</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="using-the-stack_function">Using the stack_function<a class="anchor" aria-label="anchor" href="#using-the-stack_function"></a>
+</h2>
+<p><code>{r eval=FALSE, warning=FALSE} stack_function&lt;-function(data,column1,column2,column3,graphname){   graph_data&lt;-data %&gt;%     dplyr::select({{column1}},{{column2}},{{column3}}) %&gt;%     tidyr::gather(key=sgls, value=mm) %&gt;%     dplyr::mutate(rounded = round(mm)) %&gt;%     dplyr::group_by(rounded, sgls) %&gt;%     dplyr::summarize(count=n())   plot&lt;-ggplot2::ggplot(data=graph_data,mapping=aes(x=rounded,y=count,fill=sgls))+ggplot2::geom_col(position = position_stack())+xlab("SGL's (mm)")+ylab("Frequency")   ggplot2::ggsave(graphname, width = 160, height = 80, units = "mm",dpi = 300)   return(graph_data) }</code></p>
+</div>
+<div class="section level2">
+<h2 id="example-stack-function-input">Example Stack function input<a class="anchor" aria-label="anchor" href="#example-stack-function-input"></a>
+</h2>
+<pre><code><span><span class="fu"><a href="reference/stack_function.html">stack_function</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">athens_sgl_4</span>,column1<span class="op">=</span><span class="va">larva_sgls</span>,column2<span class="op">=</span><span class="va">meta_sgls</span>,column3<span class="op">=</span><span class="va">adult_rounded_sgls</span>,graphname<span class="op">=</span><span class="st">"data/plots/athens_sgl_4_plot.png"</span><span class="op">)</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="using-the-frequency_function">Using the Frequency_function<a class="anchor" aria-label="anchor" href="#using-the-frequency_function"></a>
+</h2>
+<p><code>{r eval=FALSE, warning=FALSE} Frequency_function&lt;-function(data,column1,column2,column3){   col_1&lt;-data %&gt;%     dplyr::select({{column1}}) %&gt;%     tidyr::na.omit() %&gt;%     dplyr::count()   col_2&lt;-data %&gt;%     dplyr::select({{column2}}) %&gt;%     tidyr::na.omit() %&gt;%     dplyr::count()   col_3&lt;-data %&gt;%     dplyr::select({{column3}}) %&gt;%     tidyr::na.omit() %&gt;%     dplyr::count()   N_total&lt;-col_1+col_2+col_3   if(col_2&gt;0 | col_3&gt;0){     return(N_total)   }else{     message(paste("Column2 or Column3 is empty.", col_1))   } }</code></p>
+</div>
+<div class="section level2">
+<h2 id="example-frequency-function">Example Frequency function<a class="anchor" aria-label="anchor" href="#example-frequency-function"></a>
+</h2>
+<pre><code><span><span class="fu"><a href="reference/Frequency_function.html">Frequency_function</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">athens_sgl_1</span>,column1<span class="op">=</span><span class="va">larva_sgls</span>,column2<span class="op">=</span><span class="va">meta_sgls</span>,column3<span class="op">=</span><span class="va">adult_rounded_sgls</span><span class="op">)</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="using-the-mapping_function">Using the mapping_function<a class="anchor" aria-label="anchor" href="#using-the-mapping_function"></a>
+</h2>
+<p>```{r eval=FALSE, warning=FALSE} mapping_function&lt;-function(data,column1,column2,column3){ mapping_data&lt;-data %&gt;% dplyr::select({{column1}},{{column2}},{{column3}}) %&gt;% dplyr::group_by({{column3}}) %&gt;% tidyr::na.omit() %&gt;% dplyr::mutate(Actual_lon=as.integer({{column1}})) %&gt;% dplyr::mutate(Actual_lat=as.integer({{column2}}))</p>
+<p>map&lt;-leaflet::leaflet(mapping_data) %&gt;% leaflet::addTiles() %&gt;% leaflet::addMarkers(<sub>Actual_lon,</sub>Actual_lat,popup=mapping_data$column3) return(map) }</p>
+<pre><code><span></span>
+<span><span class="co">## Example Mapping function input</span></span></code></pre>
+<p>mapping_function(data=Thesis_Data_Table_for_R_and_Figures,column1=Actual_lon,column2=Actual_lat,column3=Locality)</p>
+<pre><code>
+## Using the Linear_plot_function
+```{r eval=FALSE, warning=FALSE}
+Linear_plot_function&lt;-function(data,x=column1,y=column2,xlab="text1",ylab="text2",title="text3",label="text4"){
+  chart_label = paste(label)
+  xlab_label = paste(xlab)
+  ylab_label = paste(ylab)
+  title_label = paste(title)
+  line_plot&lt;-ggplot2::ggplot(data,aes(x={{x}},y={{y}}))+ggplot2::geom_point()+ggplot2::geom_smooth(method="lm",color="black",size=0.5,fill="gray")+ labs(x=xlab_label,y=ylab_label, title=title_label)+annotate("text",x=20,y=28,label=chart_label,parse=T)+theme_bw()
+  return(line_plot)
+}</code></pre>
+</div>
+<div class="section level2">
+<h2 id="example-linear-plot-function-input">Example Linear Plot function input<a class="anchor" aria-label="anchor" href="#example-linear-plot-function-input"></a>
+</h2>
+<pre><code><span><span class="fu"><a href="reference/Linear_plot_function.html">Linear_plot_function</a></span><span class="op">(</span><span class="va">Thesis_Data_Table_for_R_and_Figures</span>,x<span class="op">=</span><span class="va">Avg_temp</span>,y<span class="op">=</span><span class="va">Avg_sample_sgl</span>, xlab<span class="op">=</span><span class="st">"Avg temperature(celcius)"</span>,ylab<span class="op">=</span> <span class="st">"Avg Size SGL(mm)"</span> ,title<span class="op">=</span><span class="st">"Linear regression to predict salamander size"</span> ,label<span class="op">=</span> <span class="st">"R^2==0.966"</span><span class="op">)</span></span></code></pre>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

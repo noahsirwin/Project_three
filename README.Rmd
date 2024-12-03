@@ -1,5 +1,0 @@
-# Thesis R Package
-## An R Package used to analyze and plot my data
-### Author: Noah Irwin
-
-New changes
