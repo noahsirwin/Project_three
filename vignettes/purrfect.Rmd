@@ -140,7 +140,7 @@ Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2
 }
 ```
 
-##Example Linear Plot function input
+## Example Linear Plot function input
 ```
 Linear_plot_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl, xlab="Avg temperature(celcius)",ylab= "Avg Size SGL(mm)" ,title="Linear regression to predict salamander size" ,label= "R^2==0.966")
 ```
