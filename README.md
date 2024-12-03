@@ -10,13 +10,13 @@
 
 ## Installation Instructions
 
-```{r setup}
-devtools::install_github("noahsirwin/Project_three") ##Gives me token problems
+```
+devtools::install_github("noahsirwin/Project_three")
 library(purrfect)
 ```
 
 ## Where to get the data
-```{r}
+```
 library(readxl)
 library(googlesheets4)
 library(readxl)
@@ -26,7 +26,7 @@ download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/d
 ```
 
 ## Using the Thesis_avg_function
-```{r eval=FALSE, warning=FALSE}
+```
 Thesis_avg_function<-function(data,columns){
   data<-data%>%
     filter(!is.na({{columns}})) %>%
@@ -41,8 +41,9 @@ Thesis_avg_function<-function(data,columns){
 Thesis_avg_function(athens_sgl_1,larva_sgls)
 ```
 
-## Using the stack_function
-```{r eval=FALSE, warning=FALSE}
+
+## Using the Stack_function
+```
 stack_function<-function(data,column1,column2,column3,graphname){
   graph_data<-data %>%
     dplyr::select({{column1}},{{column2}},{{column3}}) %>%
@@ -61,8 +62,9 @@ stack_function<-function(data,column1,column2,column3,graphname){
 stack_function(data=athens_sgl_4,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls,graphname="data/plots/athens_sgl_4_plot.png")
 ```
 
+
 ## Using the Frequency_function 
-```{r eval=FALSE, warning=FALSE}
+```
 Frequency_function<-function(data,column1,column2,column3){
   col_1<-data %>%
     dplyr::select({{column1}}) %>%
@@ -90,8 +92,9 @@ Frequency_function<-function(data,column1,column2,column3){
 Frequency_function(data=athens_sgl_1,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls)
 ```
 
+
 ## Using the mapping_function
-```{r eval=FALSE, warning=FALSE}
+```
 mapping_function<-function(data,column1,column2,column3){
   mapping_data<-data %>%
     dplyr::select({{column1}},{{column2}},{{column3}}) %>%
@@ -112,8 +115,9 @@ mapping_function<-function(data,column1,column2,column3){
 mapping_function(data=Thesis_Data_Table_for_R_and_Figures,column1=Actual_lon,column2=Actual_lat,column3=Locality)
 ```
 
+
 ## Using the Linear_plot_function
-```{r eval=FALSE, warning=FALSE}
+```
 Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2",title="text3",label="text4"){
   chart_label = paste(label)
   xlab_label = paste(xlab)
@@ -128,3 +132,4 @@ Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2
 ```
 Linear_plot_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl, xlab="Avg temperature(celcius)",ylab= "Avg Size SGL(mm)" ,title="Linear regression to predict salamander size" ,label= "R^2==0.966")
 ```
+
