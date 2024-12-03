@@ -1,5 +1,0 @@
----
-title: "Notes11-5-2024"
-output: html_document
-date: "2024-11-05"
----

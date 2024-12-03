@@ -6,8 +6,8 @@
 #' @export
 Thesis_avg_function<-function(data,columns){
   data<-data%>%
-    tidyr::na.omit(dataframe) %>%
-    dplyr::pull(columns)
+    filter(!is.na({{columns}})) %>%
+    pull({{columns}})
   avg<-mean(data)
   return(avg)
 }

@@ -16,12 +16,11 @@ knitr::opts_chunk$set(
 ## Introducing the Purrfect package
 + This package was created as the final project of an R course. 
 + It's purpose is to aid me in the analysis and plotting of my thesis data. 
-+ This includes generating averages, frequencys, linear regressions, and plots. 
++ This includes generating averages, frequencies, linear regressions, and plots. 
 + This package works with any data frame that has been read into R. 
 
 ## Installation Instructions
-
-```{r setup}
+```{r}
 devtools::install_github("noahsirwin/Project_three")
 library(purrfect)
 ```
@@ -40,16 +39,16 @@ download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/d
 ```{r eval=FALSE, warning=FALSE}
 Thesis_avg_function<-function(data,columns){
   data<-data%>%
-    na.omit(dataframe) %>%
-    pull(columns)
+    filter(!is.na({{columns}})) %>%
+    pull({{columns}})
   avg<-mean(data)
   return(avg)
 }
 ```
 
 ## Example Average function Input
-```{r}
-Thesis_avg_function(athens_sgl_1,"larva_sgls")
+```
+Thesis_avg_function(athens_sgl_1,larva_sgls)
 ```
 
 ## Using the stack_function
@@ -68,7 +67,7 @@ stack_function<-function(data,column1,column2,column3,graphname){
 ```
 
 ## Example Stack function input
-```{r}
+```
 stack_function(data=athens_sgl_4,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls,graphname="data/plots/athens_sgl_4_plot.png")
 ```
 
@@ -97,7 +96,7 @@ Frequency_function<-function(data,column1,column2,column3){
 ```
 
 ## Example Frequency function
-```{r}
+```
 Frequency_function(data=athens_sgl_1,column1=larva_sgls,column2=meta_sgls,column3=adult_rounded_sgls)
 ```
 
@@ -119,7 +118,7 @@ mapping_function<-function(data,column1,column2,column3){
 ```
 
 ## Example Mapping function input
-```{r}
+```
 mapping_function(data=Thesis_Data_Table_for_R_and_Figures,column1=Actual_lon,column2=Actual_lat,column3=Locality)
 ```
 
@@ -136,6 +135,6 @@ Linear_plot_function<-function(data,x=column1,y=column2,xlab="text1",ylab="text2
 ```
 
 ##Example Linear Plot function input
-```{r}
+```
 Linear_plot_function(Thesis_Data_Table_for_R_and_Figures,x=Avg_temp,y=Avg_sample_sgl, xlab="Avg temperature(celcius)",ylab= "Avg Size SGL(mm)" ,title="Linear regression to predict salamander size" ,label= "R^2==0.966")
 ```
