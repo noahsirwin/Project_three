@@ -2,5 +2,6 @@ pandoc: 3.1.11
 pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
+  Projectthree_amw: Projectthree_amw.html
   purrfect: purrfect.html
-last_built: 2024-12-05T17:56Z
+last_built: 2024-12-05T18:10Z
