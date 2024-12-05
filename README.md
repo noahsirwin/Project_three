@@ -23,6 +23,7 @@ library(readxl)
 gs4_deauth()
 download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/Thesis%20Data%20Table%20for%20R%20and%20Figures.xlsx", "/cloud/project/data/Thesis_Data_Table_for_R_and_Figures.xlsx")
 download.file("https://github.com/noahsirwin/Project_three/raw/refs/heads/main/data/First_collection_sgls.xlsx","/cloud/project/data/First_collection_sgls.xlsx")
+athens_sgl_1<-readxl::read_excel("data/First_collection_sgls.xlsx", na = c("NA", ""),sheet="athens1")
 ```
 
 ## Using the Thesis_avg_function
